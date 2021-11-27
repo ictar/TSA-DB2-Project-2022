@@ -7,7 +7,7 @@ Design choices and implementation are described inside the released [presentatio
 ## Development
 This project has been developed with the following technologies:
 * Java SE
-* TomEE
+* TomEE 8.0.8
 * MySQL Server
   
 ## Authors
