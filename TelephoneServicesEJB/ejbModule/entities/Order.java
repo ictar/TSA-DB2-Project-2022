@@ -1,16 +1,16 @@
-package project.entities;
+package entities;
 
 
 import java.time.LocalTime;
 import java.util.Date;
 
 import javax.persistence.*;
-/*
+
 @Entity
 public class Order {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@OneToOne
@@ -21,7 +21,7 @@ public class Order {
 	@JoinColumn(name="serviceActivationID")
 	private ServiceActivation serviceActivation;
 	
-	/*@ManyToOne
+	@ManyToOne
 	@JoinColumn(name = "userID")
 	private User user;
 		
@@ -33,4 +33,3 @@ public class Order {
 	private boolean rejectedFlag;
 	
 }
-*/

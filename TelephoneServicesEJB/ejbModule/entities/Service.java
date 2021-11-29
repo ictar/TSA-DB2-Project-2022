@@ -1,13 +1,13 @@
-package project.entities;
+package entities;
 
 import javax.persistence.*;
 import java.util.Set;
-/*
+
 @Entity
 public class Service {
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@ManyToMany(mappedBy="includedServices")
@@ -22,4 +22,3 @@ public class Service {
 	private float extraGBFee;
 	
 }
-*/

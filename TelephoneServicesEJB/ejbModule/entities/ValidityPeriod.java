@@ -1,14 +1,13 @@
-package project.entities;
+package entities;
 
 import javax.persistence.*;
-/*
-//@Entity
+
+@Entity
 public class ValidityPeriod {
 	
-	//@Id
-   // @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private int durationMonths;
 	private float price;
 }
-*/

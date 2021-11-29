@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Album Management Home</title>
+</head>
+<body>
+	<h1>Welcome Album Home Page</h1>
+	<table>
+		<tr>
+			<th></th>
+			<th>Insert</th>
+			<th>Delete</th>
+		</tr>
+		<tr>
+			<td>Artist</td>
+			<td>
+
+				<form action="CreateArtist" method="POST">
+					Username: <input type="text" name="name" value="e" required>
+					<br> <input type="submit" value="create">
+				</form>
+			</td>
+
+
+			<td>
+				<form action="DeleteArtist" method="POST">
+					ID: <input type="text" name="id" value="1" required> <br>
+					<input type="submit" value="delete">
+				</form>
+
+			</td>
+		</tr>
+		<tr>
+			<td>Song</td>
+			<td>
+				<form action="CreateSong" method="POST">
+					Name: <input type="text" name="name" value="e" required>
+					Artist: <input type="text" name="artist" value="e" required>
+					<br> <input type="submit" value="create">
+				</form>
+			</td>
+			<td>
+				<form action="UpdateSong" method="POST">
+					ID: <input type="text" name="id" value="1" required> <br>
+					<input type="submit" value="Update">
+				</form>
+
+			</td>
+		</tr>
+
+	</table>
+
+
+	<p th:text=" ${result}"></p>
+</body>
+</html>

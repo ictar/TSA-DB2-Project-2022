@@ -1,13 +1,13 @@
-package project.entities;
+package entities;
 
 import javax.persistence.*;
 import java.util.Set;
-/*
+
 @Entity
 public class ServicePackage {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String name;
 	
@@ -23,4 +23,3 @@ public class ServicePackage {
 	)	
 	private Set<Service> includedServices;
 }
-*/
