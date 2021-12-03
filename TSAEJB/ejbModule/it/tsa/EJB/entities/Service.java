@@ -1,4 +1,4 @@
-package entities;
+package it.tsa.EJB.entities;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,7 +10,7 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToMany(mappedBy="includedServices")
+	@ManyToMany(mappedBy="availableServices", fetch = FetchType.EAGER)
 	private Set<ServicePackage> servicePackageRelated;
 	
 	private String name;

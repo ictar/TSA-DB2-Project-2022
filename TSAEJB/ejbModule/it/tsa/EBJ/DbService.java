@@ -1,4 +1,4 @@
-package services;
+package it.tsa.EBJ;
 
 import java.util.List;
 
@@ -7,8 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
-import entities.dummyEntities.*;
-import exceptions.LoginErrorException;
+import it.polimi.db2.album.entities.Album;
+import it.tsa.EJB.entities.ServicePackage;
+import it.tsa.EJB.entities.dummyEntities.*;
+import it.tsa.EJB.exceptions.LoginErrorException;
 
 @Stateless
 public class DbService {
@@ -59,6 +61,11 @@ public class DbService {
 		} else
 			return false;
 
+	}
+	
+	public List<ServicePackage> getAllServicePackages() {
+
+		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
 	}
 
 	// examples
