@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Album Management Home</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<h1>Telco Service Home Page</h1>
+	<table class="table">
+		<tr>
+			<th>Login</th>
+			<th>Register</th>
+		</tr>
+		<tr>
+			<td>
+
+				<form action="UserLogin" method="POST">
+					Username: <input type="text" name="username" value="user1" required>
+					Password: <input type="text" name="password" value="pass" required>
+					<br> <input type="submit" value="Login">
+				</form>
+			</td>
+
+
+			<td>
+				<form action="UserRegister" method="POST">
+					Username: <input type="text" name="username" value="user1" required>
+					Password: <input type="text" name="password" value="pass" required>
+					Email: <input type="text" name="email" value="mail@mail.com"
+						required> <input type="submit" value="Register">
+					<p th:text=" ${regResult}"></p>
+
+				</form>
+
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
