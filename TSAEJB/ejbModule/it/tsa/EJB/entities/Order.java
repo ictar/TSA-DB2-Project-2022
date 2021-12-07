@@ -7,11 +7,9 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import it.tsa.EJB.entities.dummyEntities.*;
-
 @Entity
+@Table(name = "orders")
 public class Order {
-	//last class to check
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +37,7 @@ public class Order {
 			joinColumns= @JoinColumn(name ="orderId"),
 			inverseJoinColumns = @JoinColumn(name ="optProdId")
 	)
-	private Set<OptionalProduct> chosenOptProds;
+	private Set<OptProduct> chosenOptProds;
 		
 	private Date dateOfCreation;
 	private LocalTime hourOfCreation;
@@ -47,5 +45,9 @@ public class Order {
 	private Date startDate;
 	private boolean validityFlag;
 	private boolean rejectedFlag;
+	
+	public void setUser(User user) {
+		this.user = user;
+		}
 	
 }

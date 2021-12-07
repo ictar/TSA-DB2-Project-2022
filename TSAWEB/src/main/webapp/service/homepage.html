@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Telco homepage</title>
+<link rel="stylesheet" type="text/css" href="../style.css" />
+</head>
+<body>
+
+	<div align="right" th:if = "${userIsLogged}">
+		<a th:href="@{/Logout}">Logout</a>
+	</div>
+	
+	<div>
+		What you can do:
+		
+		<a th:href="@{/BuyService}">Buy Service</a>
+		 <a th:if = "${user.insolventFlag}" th:href="@{/RejectedOrderService}">Check rejected orders</a>
+	</div>
+</body>
+</html>

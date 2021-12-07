@@ -1,4 +1,4 @@
-package controller;
+package it.tsa.WEB.controller;
 
 import java.io.*;
 
@@ -17,9 +17,9 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import services.DbService;
-import entities.dummyEntities.*;
-import exceptions.LoginErrorException;
+import it.tsa.EJB.entities.User;
+import it.tsa.EJB.exceptions.LoginErrorException;
+import it.tsa.EJB.services.DbService;
 
 /**
  * Servlet implementation class CreatePhoto
@@ -65,39 +65,40 @@ public class UserLogin extends HttpServlet {
 
 		try {
 			User success = dbService.checkCredentials(username, password);
-			// go to homepage
-			path = "/homepage.html";
-			templateEngine.process(path, ctx, response.getWriter());
+/*
+ stateful service defined by teacher, useless to us so far
+ 
+			QueryService qService = null;
+			try {
 
-			/*
-			 * QueryService qService = null; try {
-			 */
-			/*
-			 * We need one distinct EJB for each user. Get the Initial Context for the JNDI
-			 * lookup for a local EJB. Note that the path may be different in different EJB
-			 * environments. In IntelliJ use: ic.lookup(
-			 * "java:/openejb/local/ArtifactFileNameWeb/ArtifactNameWeb/QueryServiceLocalBean"
-			 * );
-			 */
-			/*
-			 * InitialContext ic = new InitialContext(); // Retrieve the EJB using JNDI
-			 * lookup qService = (QueryService)
-			 * ic.lookup("java:/openejb/local/QueryServiceLocalBean"); } catch (Exception e)
-			 * { e.printStackTrace();
-			 * 
-			 * } request.getSession().setAttribute("queryService", qService);
-			 */
+				/*
+				 * We need one distinct EJB for each user. Get the Initial Context for the JNDI
+				 * lookup for a local EJB. Note that the path may be different in different EJB
+				 * environments. In IntelliJ use: ic.lookup(
+				 * "java:/openejb/local/ArtifactFileNameWeb/ArtifactNameWeb/QueryServiceLocalBean"
+				 * );
+				 */
+/*
+				InitialContext ic = new InitialContext(); // Retrieve the EJB using JNDI lookup 
+				qService = (QueryService) ic.lookup("java:/openejb/local/QueryServiceLocalBean");
+			} catch (Exception e) {
+				e.printStackTrace();
+
+			}
+			request.getSession().setAttribute("queryService", qService);
+*/
+			// go to homepage calling GoToHomepage servlet
 			request.getSession().setAttribute("user", success);
-			path = getServletContext().getContextPath() + "/GoToHomePage";
+			path = getServletContext().getContextPath() + "/GoToHomepage";
 			response.sendRedirect(path);
 
 		} catch (LoginErrorException e) {
 
-			servletContext = getServletContext();
 			ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", "Incorrect username or password");
-			path = "/index.html";
-			templateEngine.process(path, ctx, response.getWriter());
+			ctx.setVariable("errorMsgLogin", "Wrong us or pass");
+			String paath = "/index.html";
+			templateEngine.process(paath, ctx, response.getWriter());
+		
 		}
 	}
 

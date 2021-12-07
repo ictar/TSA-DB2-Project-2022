@@ -1,3 +1,4 @@
+
 package it.tsa.EJB.entities;
 
 import javax.persistence.*;
@@ -21,4 +22,7 @@ public class Service {
 	private float extraSMSFee;
 	private float extraGBFee;
 	
+	public String getName() {
+		return name;
+	}
 }

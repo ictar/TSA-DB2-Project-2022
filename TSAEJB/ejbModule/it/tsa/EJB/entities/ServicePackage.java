@@ -2,12 +2,12 @@ package it.tsa.EJB.entities;
 
 import javax.persistence.*;
 
-import it.tsa.EJB.entities.OptionalProduct;
-
 import java.util.Set;
 
 @Entity
+@Table(name="ServicePkg")
 @NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp")
+@NamedQuery(name = "ServicePackage.findOne", query = "SELECT sp FROM ServicePackage sp WHERE sp.id=?1")
 public class ServicePackage {
 
 	@Id
@@ -19,7 +19,7 @@ public class ServicePackage {
 	private Set<ValidityPeriod> validityPeriods;
 
 	@ManyToMany
-	@JoinTable(name = "servicesInPkg", joinColumns = @JoinColumn(name = "servicePackageId"), inverseJoinColumns = @JoinColumn(name = "serviceId"))
+	@JoinTable(name = "servicesInPkg", joinColumns = @JoinColumn(name = "servicePkgId"), inverseJoinColumns = @JoinColumn(name = "serviceId"))
 	/*
 	 * would place this but generates error in Service
 	 * 
@@ -28,10 +28,14 @@ public class ServicePackage {
 	private Set<Service> availableServices;
 
 	@ManyToMany(mappedBy="servicePkgs", fetch=FetchType.EAGER)
-	private Set<OptionalProduct> availableOptProds;
+	private Set<OptProduct> availableOptProds;
 
 	@OneToMany(mappedBy = "servicePackage")
 	private Set<Order> orders;
+	
+	public int getId() {
+		return id;
+	}
 	
 	public void setName(String name) {
 		this.name = name;
@@ -39,5 +43,16 @@ public class ServicePackage {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Set<Service> getavailableServices() {
+		return availableServices;
+	}
+	
+	public Set<OptProduct> getAvailableOptProds(){
+		return availableOptProds;
+	}
+	public Set<ValidityPeriod> getValidityPeriods(){
+		return validityPeriods;
 	}
 }	

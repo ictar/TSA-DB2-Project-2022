@@ -10,13 +10,25 @@ public class ValidityPeriod {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private int durationMonths;
+	private int monthDuration;
 	private float price;
 	
 	@ManyToOne
-	@JoinColumn(name ="validityPeriodId")
+	@JoinColumn(name ="servicePackageId")
 	private ServicePackage servicePackage;
 	
 	@OneToMany(mappedBy="validityPeriod")
 	private Set<Order> actualOrders;
+	
+	public int getId() {
+		return id;
+	}
+	
+	public int getMonthDuration() {
+		return monthDuration;
+	}
+	
+	public float getPrice() {
+		return price;
+	}
 }
