@@ -1,5 +1,10 @@
 package it.tsa.EJB.services;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -7,10 +12,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
-import it.polimi.db2.album.entities.Album;
+import it.tsa.EJB.entities.OptProduct;
+import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
-import it.tsa.EJB.entities.dummyEntities.*;
+import it.tsa.EJB.entities.User;
+import it.tsa.EJB.entities.ValidityPeriod;
 import it.tsa.EJB.exceptions.LoginErrorException;
+
 
 @Stateless
 public class DbService {
@@ -39,8 +47,8 @@ public class DbService {
 
 	public boolean createUser(String username, String pwd, String email) {
 
-		List<User> uList = null;
-		try {
+		List<User> uList = new ArrayList<User>();
+	/*	try {
 			//TODO define query in User class
 			uList = em.createNamedQuery("User.checkDuplicateUsername", User.class).setParameter(1, username)
 					.getResultList();
@@ -48,7 +56,7 @@ public class DbService {
 		} catch (PersistenceException e) {
 			return false;
 		}
-		
+*/		
 		if (uList.isEmpty()) {
 			User newUser = new User();
 			newUser.setUsername(username);
@@ -63,9 +71,47 @@ public class DbService {
 
 	}
 	
-	public List<ServicePackage> getAllServicePackages() {
-
+	public ServicePackage retrieveServicePackage(int servicePackageId) {
+		return em.createNamedQuery("ServicePackage.findOne", ServicePackage.class).setParameter(1, servicePackageId).getResultList().get(0);		
+	}
+	
+	public List<ServicePackage> findAllServicePackages() {
 		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
+	}
+	
+	public void createOrder(User user, int chosenSP, int chosenVP, List<Integer> chosenOP) {
+		HashSet<OptProduct> chosenOptProds = new HashSet<OptProduct>();
+		Order newOrder = new Order();
+		Date date = new Date();
+		newOrder.setUser(user);
+		newOrder.setValidityPeriod(em.createNamedQuery("ValidityPeriod.getOne", ValidityPeriod.class).setParameter(1, chosenVP).getResultList().get(0));
+		newOrder.setServicePackage(em.createNamedQuery("ServicePackage.findOne", ServicePackage.class).setParameter(1, chosenSP).getResultList().get(0));
+		
+		for(Integer optProd: chosenOP) {
+			chosenOptProds.add(em.createNamedQuery("OptProduct.findOne", OptProduct.class).setParameter(1, optProd).getResultList().get(0));
+		}
+
+		newOrder.setChosenOptProds(chosenOptProds);
+		newOrder.setDateOfCreation(date);
+		newOrder.setHourOfCreation(date.getHours());
+		newOrder.setRejectedFlag(false);
+		newOrder.setTotalvalue(computeTotalCostFromOrder(newOrder));
+		newOrder.setValidityFlag(true);
+		date.setMonth(date.getMonth()+1);
+		newOrder.setStartDate(date);
+		em.persist(newOrder);
+		em.flush();
+	}
+	
+	private float computeTotalCostFromOrder(Order order) {
+		
+		float totalCost = order.getValidityPeriod().getPrice();
+		order.getChosenOptProds().stream().forEach(op -> {
+			System.out.println("Price: " + op.getMonthlyFee());
+		});
+		totalCost = order.getChosenOptProds().stream().map(product -> product.getMonthlyFee()).reduce(totalCost, (a, b) -> a+b);
+		totalCost*= order.getValidityPeriod().getMonthDuration();
+		return totalCost;
 	}
 
 	// examples

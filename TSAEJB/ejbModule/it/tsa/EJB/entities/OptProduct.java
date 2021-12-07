@@ -12,7 +12,8 @@ import javax.persistence.*;
  *
  */
 @Entity
-
+@Table(name="optproduct")
+@NamedQuery(name = "OptProduct.findOne", query = "SELECT op FROM OptProduct op WHERE op.id=?1")
 public class OptProduct implements Serializable {
 
 	
@@ -23,7 +24,7 @@ public class OptProduct implements Serializable {
 	private int id;
 	
 	private String name;
-	private int monthlyFee;
+	private float monthlyFee;
 	
 	// relationships
 
@@ -68,14 +69,14 @@ public class OptProduct implements Serializable {
 	/**
 	 * @return the monthlyFee
 	 */
-	public int getMonthlyFee() {
+	public float getMonthlyFee() {
 		return monthlyFee;
 	}
 
 	/**
 	 * @param monthlyFee the monthlyFee to set
 	 */
-	public void setMonthlyFee(int monthlyFee) {
+	public void setMonthlyFee(float monthlyFee) {
 		this.monthlyFee = monthlyFee;
 	}
 

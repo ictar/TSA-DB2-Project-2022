@@ -40,7 +40,95 @@ public class Order {
 	private Set<OptProduct> chosenOptProds;
 		
 	private Date dateOfCreation;
-	private LocalTime hourOfCreation;
+	public int getId() {
+		return id;
+	}
+
+	public ActivationSchedule getActivationSchedule() {
+		return activationSchedule;
+	}
+
+	public void setActivationSchedule(ActivationSchedule activationSchedule) {
+		this.activationSchedule = activationSchedule;
+	}
+
+	public ValidityPeriod getValidityPeriod() {
+		return validityPeriod;
+	}
+
+	public void setValidityPeriod(ValidityPeriod validityPeriod) {
+		this.validityPeriod = validityPeriod;
+	}
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
+	}
+
+	public Set<OptProduct> getChosenOptProds() {
+		return chosenOptProds;
+	}
+
+	public void setChosenOptProds(Set<OptProduct> chosenOptProds) {
+		this.chosenOptProds = chosenOptProds;
+	}
+
+	public Date getDateOfCreation() {
+		return dateOfCreation;
+	}
+
+	public void setDateOfCreation(Date dateOfCreation) {
+		this.dateOfCreation = dateOfCreation;
+	}
+
+	public int getHourOfCreation() {
+		return hourOfCreation;
+	}
+
+	public void setHourOfCreation(int hourOfCreation) {
+		this.hourOfCreation = hourOfCreation;
+	}
+
+	public float getTotalvalue() {
+		return totalvalue;
+	}
+
+	public void setTotalvalue(float totalvalue) {
+		this.totalvalue = totalvalue;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public boolean isValidityFlag() {
+		return validityFlag;
+	}
+
+	public void setValidityFlag(boolean validityFlag) {
+		this.validityFlag = validityFlag;
+	}
+
+	public boolean isRejectedFlag() {
+		return rejectedFlag;
+	}
+
+	public void setRejectedFlag(boolean rejectedFlag) {
+		this.rejectedFlag = rejectedFlag;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	private int hourOfCreation;
 	private float totalvalue;
 	private Date startDate;
 	private boolean validityFlag;

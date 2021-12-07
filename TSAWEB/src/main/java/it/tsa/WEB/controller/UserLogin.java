@@ -58,7 +58,7 @@ public class UserLogin extends HttpServlet {
 			throws ServletException, IOException {
 
 		String path;
-
+		
 		// get values from html page
 		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
