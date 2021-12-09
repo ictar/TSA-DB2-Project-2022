@@ -10,8 +10,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-@NamedQuery(name = "User.checkCredentials",
-query = "SELECT u From User u WHERE u.username=?1 and u.password=?2")
+@NamedQuery(name = "User.checkCredentials", query = "SELECT u From User u WHERE u.username=?1 and u.password=?2")
 public class User implements Serializable {
 
 	

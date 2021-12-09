@@ -19,7 +19,7 @@
 	</div>
 
 
-	<form th:action="@{SelectServicePackage}" method="POST">
+	<form th:action="@{BuyService}" method="POST">
 		<table>
 			<tr th:each="srvPkg : ${servicePackages}">
 				<td><input type="radio" th:value="${srvPkg.id}"
@@ -57,7 +57,8 @@
 				</td>
 			</tr>
 		</table>
-		<input type="submit" value="Scegli"/>
+		<input type="date" name="startDate"/>
+		<input type="submit" name ="confirmButton" value="Confirm"/>
 	</form>
 </body>
 </html>

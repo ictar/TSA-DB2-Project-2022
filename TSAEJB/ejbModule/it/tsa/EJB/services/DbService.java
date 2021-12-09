@@ -79,7 +79,7 @@ public class DbService {
 		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
 	}
 	
-	public void createOrder(User user, int chosenSP, int chosenVP, List<Integer> chosenOP) {
+	public Order createOrder(User user, int chosenSP, int chosenVP, List<Integer> chosenOP, Date startDate) {
 		HashSet<OptProduct> chosenOptProds = new HashSet<OptProduct>();
 		Order newOrder = new Order();
 		Date date = new Date();
@@ -97,10 +97,13 @@ public class DbService {
 		newOrder.setRejectedFlag(false);
 		newOrder.setTotalvalue(computeTotalCostFromOrder(newOrder));
 		newOrder.setValidityFlag(true);
-		date.setMonth(date.getMonth()+1);
-		newOrder.setStartDate(date);
-		em.persist(newOrder);
-		em.flush();
+		newOrder.setStartDate(startDate);
+		return newOrder;
+	}
+	
+	public void confirmOrder(Order order) {
+		em.persist(order);
+		em.flush();					
 	}
 	
 	private float computeTotalCostFromOrder(Order order) {
