@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
@@ -14,12 +15,13 @@ import it.tsa.EJB.exceptions.CredentialsException;
 
 @Stateless
 public class EmployeeService {
+	
+	@PersistenceContext(unitName = "TSAEJB")
 	protected EntityManager em;
 	
-	public EmployeeService(EntityManager em) {
-		this.em = em;
+	public EmployeeService() {
+
 	}
-	
 	
 	
 	public Employee checkCredentials(String username, String password) throws   CredentialsException, NonUniqueResultException {
@@ -27,8 +29,8 @@ public class EmployeeService {
 		
 		try {
 			eList = em.createNamedQuery("Employee.checkCredenetials", Employee.class)
-					.setParameter("username", username)
-					.setParameter("password", password)
+					.setParameter(1, username)
+					.setParameter(2, password)
 					.getResultList();
 		}catch(PersistenceException e) {
 			throw new  CredentialsException("Could not verify credentials of employee " + username);

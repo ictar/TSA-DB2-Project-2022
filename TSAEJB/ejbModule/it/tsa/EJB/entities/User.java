@@ -35,7 +35,7 @@ public class User implements Serializable {
 	
 	
 	// user -> auditing
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "userID")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "user")
 	private List<Auditing> audits;
 	
 	public User() {
