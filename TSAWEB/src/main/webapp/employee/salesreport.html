@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div align="right">
+	<a th:href = "@{/EmployeeHome}">Home</a><br>
+</div>
+
+<h3>Number of total purchases per package: </h3>
+<table>
+	<tr>
+		<th> Package </th>
+		<th> Total Purchases </th>
+	</tr>
+	<tr th:each="pp : ${packagePurchaseMap}">
+		<td th:text="${pp.key}"></td>
+		<td th:text="${pp.value}"></td>
+	</tr>
+</table>
+
+<hr />
+
+<h3>Number of total purchases per package and validity period: </h3>
+<table>
+	<tr>
+		<th> Package </th>
+		<th> Validity Period </th>
+		<th> Total Purchases </th>
+	</tr>
+	<tr th:each="pp : ${packageVPPurchaseMap}">
+		<td th:text="${pp.key.getServiePackage()}"></td>
+		<td th:text="${pp.key.getValidityPeriod()}"></td>
+		<td th:text="${pp.value}"></td>
+	</tr>
+</table>
+<hr />
+
+<h3>Total value of sales per package with and without the optional products: </h3>
+
+<hr />
+
+<h3>Average number of optional products sold together with each service package.</h3>
+
+<hr />
+
+<h3>List of insolvent users:</h3>
+<div th:if="${!insolventUserList.isEmpty()}">
+	<span th:each="iu: ${insolventUserList}">
+		<ul>
+			<li th:text="${iu.getUsername()}"></li>
+		</ul>
+	</span>
+</div>
+<hr />
+
+<h3>List of suspended orders and alerts:</h3>
+<div th:if="${!insolventUserList.isEmpty()}">
+	<span th:each="iu: ${insolventUserList}">
+		<ul>
+			<li th:text="${iu.getUsername()}"></li>
+		</ul>
+	</span>
+</div>
+<hr />
+
+<h3>Best seller optional product</h3>
+<div th:if="${bestOptProd != ''}">
+	<p th:text="${bestOptPro}"></p>
+</div>
+
+</body>
+</html>

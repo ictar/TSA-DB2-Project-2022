@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Employee Login Page</title>
+</head>
+<body>
+	<form name="loginForm" method="post" action="/TSAWEB/EmployeeLogin">
+	    Username: <input type="text" name="username"/> <br/>
+	    Password: <input type="password" name="password"/> <br/>
+	    <input type="submit" value="Login" />
+	    
+	    <p th:text=" ${errMsg}"></p>
+	</form>
+	
+</body>
+</html>
