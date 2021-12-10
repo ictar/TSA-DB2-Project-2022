@@ -2,6 +2,7 @@ package it.tsa.EJB.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -11,7 +12,8 @@ import javax.persistence.*;
  *
  */
 @Entity
-
+@Table(name="optproduct")
+@NamedQuery(name = "OptProduct.findOne", query = "SELECT op FROM OptProduct op WHERE op.id=?1")
 public class OptProduct implements Serializable {
 
 	
@@ -22,7 +24,7 @@ public class OptProduct implements Serializable {
 	private int id;
 	
 	private String name;
-	private int monthlyFee;
+	private float monthlyFee;
 	
 	// relationships
 
@@ -36,7 +38,7 @@ public class OptProduct implements Serializable {
 	private List<ServicePackage> servicePkgs;
 	
 	// optProduct -> Order
-	@ManyToMany(mappedBy="chosenoptprod", fetch=FetchType.LAZY)
+	@ManyToMany(mappedBy="chosenOptProds", fetch=FetchType.LAZY)
 	private Set<Order> orders;
 	
 	public OptProduct() {
@@ -67,14 +69,14 @@ public class OptProduct implements Serializable {
 	/**
 	 * @return the monthlyFee
 	 */
-	public int getMonthlyFee() {
+	public float getMonthlyFee() {
 		return monthlyFee;
 	}
 
 	/**
 	 * @param monthlyFee the monthlyFee to set
 	 */
-	public void setMonthlyFee(int monthlyFee) {
+	public void setMonthlyFee(float monthlyFee) {
 		this.monthlyFee = monthlyFee;
 	}
 
@@ -96,7 +98,7 @@ public class OptProduct implements Serializable {
 	/**
 	 * @return the orders
 	 */
-	public List<Order> getOrders() {
+	public Set<Order> getOrders() {
 		return orders;
 	}
 

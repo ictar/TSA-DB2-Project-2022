@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Telco homepage</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+	<div align="right" th:if="${userIsLogged}">
+		<a th:href="@{/Logout}">Logout</a>
+	</div>
+	Recap order:
+	<br> Chosen servicePackage:
+	<p th:text="${order.servicePackage.name}" />
+	<p th:text="'Duration: ' + ${order.validityPeriod.monthDuration}" />
+	<p th:text="'Price: ' + ${order.validityPeriod.price}" />
+	Included services:
+	<p th:each="service: ${order.servicePackage.availableServices}"
+		th:text="${service.name}" />
+	Chosen optional products:
+		<p  th:each="op: ${order.chosenOptProds}" th:text="${op.name} + ' -> ' + ${op.monthlyFee} + ' euro'"/>
+	Chosen startDate:
+	<p th:text="${order.startDate}" />
+	Total value:
+	<p th:text="${order.totalvalue}" />
+	<a th:href="@{/OrderConfirmation}">Confirm</a>
+</body>
+</html>

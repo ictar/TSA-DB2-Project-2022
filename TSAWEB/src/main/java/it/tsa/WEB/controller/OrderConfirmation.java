@@ -1,9 +1,11 @@
 package it.tsa.WEB.controller;
 
-import java.io.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import javax.ejb.EJB;
-import javax.naming.InitialContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,13 +19,16 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.tsa.EJB.entities.Order;
+import it.tsa.EJB.entities.ServicePackage;
+import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
 
 /**
- * Servlet implementation class CreatePhoto
+ * Servlet implementation class GoToHomePage
  */
-@WebServlet("/UserRegister")
-public class UserRegister extends HttpServlet {
+@WebServlet("/OrderConfirmation")
+public class OrderConfirmation extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private TemplateEngine templateEngine;
@@ -33,8 +38,9 @@ public class UserRegister extends HttpServlet {
 	@EJB(name = "project.services/DbService")
 	private DbService dbService;
 
-	public UserRegister() {
+	public OrderConfirmation() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public void init() throws ServletException {
@@ -48,41 +54,20 @@ public class UserRegister extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		Order order = (Order) request.getSession().getAttribute("order");
+
+		dbService.confirmOrder(order);
+		System.out.println("Orderconfirmed");
+		
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		// get values from html page
-		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
-		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
-		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
-
-		boolean success = dbService.createUser(username, password, email);
-		System.out.println("Success: "+ success);
-/*
-		if (!success) {
-			servletContext = getServletContext();
-			ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", "Incorrect username or password");
-		}
-		path = "/index.html";
-		templateEngine.process(path, ctx, response.getWriter());
-		*/
-		
-		String result;
-		if (!success)
-			result = "Error occurred";
-		else
-			result = "Registration was successful";
-
-		ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("registrationResult", result);
-		String path = "/index.html";
-		templateEngine.process(path, ctx, response.getWriter());
-	
+		doGet(request, response);
 	}
-
+	
+	
+	
 }
+
