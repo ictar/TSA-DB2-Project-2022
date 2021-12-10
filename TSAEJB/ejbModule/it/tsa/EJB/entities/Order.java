@@ -15,6 +15,12 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	private int hourOfCreation;
+	private float totalvalue;
+	private Date startDate;
+	private boolean validityFlag;
+	private boolean rejectedFlag;
+	
 	@OneToOne
 	@JoinColumn(name="activationScheduleId")
 	private ActivationSchedule activationSchedule;
@@ -127,12 +133,6 @@ public class Order {
 	public User getUser() {
 		return user;
 	}
-
-	private int hourOfCreation;
-	private float totalvalue;
-	private Date startDate;
-	private boolean validityFlag;
-	private boolean rejectedFlag;
 	
 	public void setUser(User user) {
 		this.user = user;

@@ -15,7 +15,7 @@ public class ValidityPeriod {
 	private float price;
 	
 	@ManyToOne
-	@JoinColumn(name ="servicePackageId")
+	@JoinColumn(name ="servicePkgId")
 	private ServicePackage servicePackage;
 	
 	@OneToMany(mappedBy="validityPeriod")
@@ -24,12 +24,26 @@ public class ValidityPeriod {
 	public int getId() {
 		return id;
 	}
-	
+
 	public int getMonthDuration() {
 		return monthDuration;
 	}
-	
+
+	public void setMonthDuration(int monthDuration) {
+		this.monthDuration = monthDuration;
+	}
+
 	public float getPrice() {
 		return price;
 	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
+	@Override
+	public String toString() {
+		return "Month Duration = " + monthDuration + ", Price = " + price;
+	}
+		
 }
