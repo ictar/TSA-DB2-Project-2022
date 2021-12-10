@@ -20,7 +20,6 @@ public class ValidityPeriod {
 	
 	@OneToMany(mappedBy="validityPeriod")
 	private Set<Order> actualOrders;
-
 	
 	public int getId() {
 		return id;

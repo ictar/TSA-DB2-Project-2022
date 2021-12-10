@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Select package</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<script>
+	// Look for a link in the row and click on it
+	function selectServicePackage(row) {
+		row.querySelector("a").click();
+	}
+</script>
+</head>
+<body>
+
+	<div align="right" th:if="${userIsLogged}">
+		<a th:href="@{/Logout}">Logout</a>
+	</div>
+
+
+	<form th:action="@{BuyService}" method="POST">
+		<table>
+			<tr th:each="srvPkg : ${servicePackages}">
+				<td><input type="radio" th:value="${srvPkg.id}"
+					name="servicePackageId" /></td>
+				<td>
+					<p th:text="${srvPkg.name}" />
+				</td>
+				<td>
+					<table>
+						<tr th:each="vp : ${srvPkg.validityPeriods}">
+							<td><input type="radio"
+								th:value="${srvPkg.id} + ',' + ${vp.id}" name="validityPeriodId" /></td>
+							<td>
+								<p th:text="${vp.monthDuration}" />
+							</td>
+							<td>
+								<p th:text="${vp.price} + ' euro'" />
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+						<tr th:each="op : ${srvPkg.availableOptProds}">
+							<td><input type="checkbox"
+								th:value="${srvPkg.id} + ',' + ${op.id}" th:name="availableOptProdId" /></td>
+							<td>
+								<p th:text="${op.name}" />
+							</td>
+							<td>
+								<p th:text="${op.monthlyFee} + ' euro'" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<input type="date" name="startDate"/>
+		<input type="submit" name ="confirmButton" value="Confirm"/>
+	</form>
+</body>
+</html>

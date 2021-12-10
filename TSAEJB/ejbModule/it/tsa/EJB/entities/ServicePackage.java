@@ -54,5 +54,5 @@ public class ServicePackage {
 	}
 	public Set<ValidityPeriod> getValidityPeriods(){
 		return validityPeriods;
-	}
+  }
 }	

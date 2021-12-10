@@ -20,6 +20,7 @@ public class Service {
 	private float extraMinFee;
 	private float extraSMSFee;
 	private float extraGBFee;
+
 	public Set<ServicePackage> getServicePackageRelated() {
 		return servicePackageRelated;
 	}
@@ -68,6 +69,5 @@ public class Service {
 	public void setExtraGBFee(float extraGBFee) {
 		this.extraGBFee = extraGBFee;
 	}
-	
-	
+
 }
