@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 @Entity
+@NamedQuery(name = "ValidityPeriod.getOne", query = "SELECT vp FROM ValidityPeriod vp WHERE vp.id=?1")
 public class ValidityPeriod {
 	
 	@Id

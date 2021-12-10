@@ -4,9 +4,10 @@ import javax.persistence.*;
 
 import java.util.Set;
 
-@Entity(name="servicePkg")
-@Table(name="servicePkg")
-@NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM servicePkg sp")
+@Entity
+@Table(name="ServicePkg")
+@NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp")
+@NamedQuery(name = "ServicePackage.findOne", query = "SELECT sp FROM ServicePackage sp WHERE sp.id=?1")
 public class ServicePackage {
 
 	@Id
@@ -32,43 +33,26 @@ public class ServicePackage {
 	@OneToMany(mappedBy = "servicePackage")
 	private Set<Order> orders;
 	
+	public int getId() {
+		return id;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public Set<ValidityPeriod> getValidityPeriods() {
-		return validityPeriods;
-	}
-
-	public void setValidityPeriods(Set<ValidityPeriod> validityPeriods) {
-		this.validityPeriods = validityPeriods;
-	}
-
-	public Set<Service> getAvailableServices() {
-		return availableServices;
-	}
-
-	public void setAvailableServices(Set<Service> availableServices) {
-		this.availableServices = availableServices;
-	}
-
-	public Set<OptProduct> getAvailableOptProds() {
-		return availableOptProds;
-	}
-
-	public void setAvailableOptProds(Set<OptProduct> availableOptProds) {
-		this.availableOptProds = availableOptProds;
-	}
-
-	public Set<Order> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(Set<Order> orders) {
-		this.orders = orders;
-	}
-
 	public String getName() {
 		return name;
+	}
+	
+	public Set<Service> getavailableServices() {
+		return availableServices;
+	}
+	
+	public Set<OptProduct> getAvailableOptProds(){
+		return availableOptProds;
+	}
+	public Set<ValidityPeriod> getValidityPeriods(){
+		return validityPeriods;
 	}
 }	
