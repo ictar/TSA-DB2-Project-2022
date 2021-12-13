@@ -40,6 +40,9 @@ public class SalesReportServlet extends HttpServlet {
 			response.sendRedirect(pathCtx + "/employee/login.html");
 			return;
 		}
+		
+		
+		
 	}
 
 }

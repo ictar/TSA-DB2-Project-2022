@@ -2,6 +2,7 @@ package it.tsa.EJB.entities;
 
 import javax.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -52,7 +53,33 @@ public class ServicePackage {
 	public Set<OptProduct> getAvailableOptProds(){
 		return availableOptProds;
 	}
+	
 	public Set<ValidityPeriod> getValidityPeriods(){
 		return validityPeriods;
-  }
+	}
+
+	public Set<Service> getAvailableServices() {
+		return availableServices;
+	}
+
+	public void setAvailableServices(Set<Service> availableServices) {
+		this.availableServices = availableServices;
+	}
+
+	public void setValidityPeriods(Set<ValidityPeriod> validityPeriods) {
+		this.validityPeriods = validityPeriods;
+	}
+
+	public void setAvailableOptProds(Set<OptProduct> availableOptProds) {
+		this.availableOptProds = availableOptProds;
+	}
+	
+	public void addValidityPeriod(ValidityPeriod vp) {
+		if(validityPeriods == null) {
+			validityPeriods = new HashSet<ValidityPeriod> ();
+		}
+		validityPeriods.add(vp);
+		vp.setServicePackage(this);
+	}
+	
 }	

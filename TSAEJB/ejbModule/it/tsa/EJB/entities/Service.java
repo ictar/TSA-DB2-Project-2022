@@ -27,6 +27,11 @@ public class Service {
 	public void setServicePackageRelated(Set<ServicePackage> servicePackageRelated) {
 		this.servicePackageRelated = servicePackageRelated;
 	}
+	
+	
+	public int getId() {
+		return id;
+	}
 	public String getName() {
 		return name;
 	}

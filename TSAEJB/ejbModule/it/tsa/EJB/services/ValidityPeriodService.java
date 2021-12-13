@@ -34,4 +34,9 @@ public class ValidityPeriodService {
 		Query qry = em.createQuery("SELECT vp FROM ValidityPeriod vp");
 		return Set.copyOf(qry.getResultList());		
 	}
+	
+	public  Set<ValidityPeriod> findAllUnusedValidityPeriods() {
+		Query qry = em.createQuery("SELECT vp FROM ValidityPeriod vp where vp.servicePackage is null");
+		return Set.copyOf(qry.getResultList());		
+	}
 }
