@@ -17,6 +17,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.exceptions.LoginErrorException;
 import it.tsa.EJB.services.DbService;
@@ -31,13 +32,9 @@ public class UserLogin extends HttpServlet {
 	private TemplateEngine templateEngine;
 	private ServletContext servletContext;
 	private WebContext ctx;
-
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
-
-	public UserLogin() {
-		super();
-	}
+	
+	@EJB(name = "project.services/UserService")
+	private UserService userService;
 
 	public void init() throws ServletException {
 		servletContext = getServletContext();
@@ -64,7 +61,8 @@ public class UserLogin extends HttpServlet {
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 
 		try {
-			User success = dbService.checkCredentials(username, password);
+			User success = userService.checkCredentials(username, password);
+			//Order order = dbService.getOrder(success);
 /*
  stateful service defined by teacher, useless to us so far
  

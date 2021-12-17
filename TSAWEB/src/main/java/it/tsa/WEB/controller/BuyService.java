@@ -40,11 +40,9 @@ public class BuyService extends HttpServlet {
 	@EJB(name = "project.services/DbService")
 	private DbService dbService;
 
-	public BuyService() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
+	@EJB(name = "project.services/OrderService")
+	private OrderService orderService;
+	
 	public void init() throws ServletException {
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
@@ -63,6 +61,8 @@ public class BuyService extends HttpServlet {
 		if (request.getParameter("confirmButton") == null) {
 			List<ServicePackage> servicePackages = null;
 			servicePackages = dbService.findAllServicePackages();
+			
+			System.out.println("Number of sp: " + servicePackages.size());
 
 			path = "/service/buyservice.html";
 
@@ -83,7 +83,7 @@ public class BuyService extends HttpServlet {
 			List<Integer> chosenOptProds = getCorrectElements(receivedChoicesOfOP, chosenSP);
 			chosenVP = checkVPCorrectness(receivedVP, chosenSP);
 
-			Order order = dbService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
+			Order order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
 			request.getSession().setAttribute("order", order);
 			path = "/service/orderConfirmation.html";
 			ctx.setVariable("order", order);
@@ -104,19 +104,19 @@ public class BuyService extends HttpServlet {
 		private List<Integer> getCorrectElements(List<String> originalElements, int correctId) {
 			List<Integer> chosenOptProds = originalElements.stream()
 					.filter(op -> op.startsWith(correctId + ",")) //looks for items starting with correct service package
-					.map(op -> op.split(",")[1]) //removes the first part (x,) leaving only y
-					.map(op -> Integer.parseInt(op)) //convert to int
-					.toList(); 
-		
-			return chosenOptProds;
-		}
-		
-		private Integer checkVPCorrectness(String receivedVP, int chosenSP) {
-			String[] params = receivedVP.split(",");
-			if (Integer.parseInt(params[0])==chosenSP)
-				return Integer.parseInt(params[1]);
-			else
-				return null;
-		}
-		
+				.map(op -> op.split(",")[1]) // removes the first part (x,) leaving only y
+				.map(op -> Integer.parseInt(op)) // convert to int
+				.toList();
+
+		return chosenOptProds;
+	}
+
+	private Integer checkVPCorrectness(String receivedVP, int chosenSP) {
+		String[] params = receivedVP.split(",");
+		if (Integer.parseInt(params[0]) == chosenSP)
+			return Integer.parseInt(params[1]);
+		else
+			return null;
+	}
+
 }

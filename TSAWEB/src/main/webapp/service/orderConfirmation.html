@@ -10,20 +10,24 @@
 	<div align="right" th:if="${userIsLogged}">
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
-	Recap order:
-	<br> Chosen servicePackage:
-	<p th:text="${order.servicePackage.name}" />
-	<p th:text="'Duration: ' + ${order.validityPeriod.monthDuration}" />
-	<p th:text="'Price: ' + ${order.validityPeriod.price}" />
-	Included services:
-	<p th:each="service: ${order.servicePackage.availableServices}"
-		th:text="${service.name}" />
-	Chosen optional products:
-		<p  th:each="op: ${order.chosenOptProds}" th:text="${op.name} + ' -> ' + ${op.monthlyFee} + ' euro'"/>
-	Chosen startDate:
-	<p th:text="${order.startDate}" />
-	Total value:
-	<p th:text="${order.totalvalue}" />
-	<a th:href="@{/OrderConfirmation}">Confirm</a>
+	<form action="OrderConfirmation" method="POST">
+		Recap order: <br> Chosen servicePackage:
+		<p th:text="${order.servicePackage.name}" />
+		<p th:text="'Duration: ' + ${order.validityPeriod.monthDuration}" />
+		<p th:text="'Price: ' + ${order.validityPeriod.price}" />
+		Included services:
+		<p th:each="service: ${order.servicePackage.availableServices}"
+			th:text="${service.name}" />
+		Chosen optional products:
+		<p th:each="op: ${order.chosenOptProds}"
+			th:text="${op.name} + ' -> ' + ${op.monthlyFee} + ' euro'" />
+		Chosen startDate:
+		<p th:text="${order.startDate}" />
+		Total value:
+		<p th:text="${order.totalvalue}" />
+		<input type="submit" name="valid" value="Valid">
+		<input type="submit" name="notValid" value="Not Valid">
+		<input type="submit" name="random" value="Random">
+	</form>
 </body>
 </html>

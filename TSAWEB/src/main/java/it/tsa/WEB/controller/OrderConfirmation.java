@@ -38,6 +38,12 @@ public class OrderConfirmation extends HttpServlet {
 	@EJB(name = "project.services/DbService")
 	private DbService dbService;
 
+	@EJB(name = "project.services/OrderService")
+	private OrderService orderService;
+	
+	@EJB(name = "project.services/UserService")
+	private UserService userService;
+
 	public OrderConfirmation() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -52,22 +58,44 @@ public class OrderConfirmation extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		Order order = (Order) request.getSession().getAttribute("order");
-
-		dbService.confirmOrder(order);
-		System.out.println("Orderconfirmed");
-		
-		
-	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		Order order = (Order) request.getSession().getAttribute("order");
+		User user = (User) request.getSession().getAttribute("user");
+		
+		orderService.confirmOrder(order);
+		System.out.println("Orderconfirmed");
+		
+		if (request.getParameter("valid") != null) {
+			//payment ok
+			orderActivated(order);
+		}
+		else if (request.getParameter("notValid") != null) {
+			//payment wrong
+			orderRejected(order, user);
+		} else if(request.getParameter("random") != null) {
+			//generate Random
+		} else {
+			//default
+		}
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doPost(request, response);
 	}
 	
 	
+	private void orderActivated(Order order) {
+		orderService.setOrderValidity(order, true);
+		dbService.createActivationSchedule(order);		
+	}
 	
+	private void orderRejected(Order order, User user) {
+		orderService.setOrderValidity(order, false);
+		userService.userInsolvent(user);
+		//dbService.createAuditing(order, user);
+	}
+		
 }
 

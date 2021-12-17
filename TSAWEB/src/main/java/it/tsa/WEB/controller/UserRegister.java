@@ -33,6 +33,9 @@ public class UserRegister extends HttpServlet {
 	@EJB(name = "project.services/DbService")
 	private DbService dbService;
 
+	@EJB(name = "project.services/UserService")
+	private UserService userService;
+
 	public UserRegister() {
 		super();
 	}
@@ -60,7 +63,7 @@ public class UserRegister extends HttpServlet {
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
 
-		boolean success = dbService.createUser(username, password, email);
+		boolean success = userService.createUser(username, password, email);
 		System.out.println("Success: "+ success);
 /*
 		if (!success) {
