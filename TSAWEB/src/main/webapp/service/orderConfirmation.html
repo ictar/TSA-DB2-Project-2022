@@ -7,6 +7,7 @@
 </head>
 <body>
 
+
 	<div align="right" th:if="${userIsLogged}">
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
@@ -25,9 +26,13 @@
 		<p th:text="${order.startDate}" />
 		Total value:
 		<p th:text="${order.totalvalue}" />
-		<input type="submit" name="valid" value="Valid">
-		<input type="submit" name="notValid" value="Not Valid">
-		<input type="submit" name="random" value="Random">
+		<div th:if="${userIsLogged}">
+			<input type="submit" name="valid" value="Valid"> <input
+				type="submit" name="notValid" value="Not Valid"> <input
+				type="submit" name="random" value="Random">
+		</div>
+		<input type="submit" name="deleteOrder" value="Delete Order"/>
+		<input th:unless="${userIsLogged}" type="submit" name="login" value="Login"> 
 	</form>
 </body>
 </html>

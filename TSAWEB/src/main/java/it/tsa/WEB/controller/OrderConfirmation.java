@@ -23,6 +23,8 @@ import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.OrderService;
+import it.tsa.EJB.services.UserService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -35,19 +37,8 @@ public class OrderConfirmation extends HttpServlet {
 	private ServletContext servletContext;
 	private WebContext ctx;
 
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
-
 	@EJB(name = "project.services/OrderService")
 	private OrderService orderService;
-	
-	@EJB(name = "project.services/UserService")
-	private UserService userService;
-
-	public OrderConfirmation() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	public void init() throws ServletException {
 		servletContext = getServletContext();
@@ -62,40 +53,47 @@ public class OrderConfirmation extends HttpServlet {
 			throws ServletException, IOException {
 		Order order = (Order) request.getSession().getAttribute("order");
 		User user = (User) request.getSession().getAttribute("user");
-		
-		orderService.confirmOrder(order);
-		System.out.println("Orderconfirmed");
-		
-		if (request.getParameter("valid") != null) {
-			//payment ok
-			orderActivated(order);
-		}
-		else if (request.getParameter("notValid") != null) {
-			//payment wrong
-			orderRejected(order, user);
-		} else if(request.getParameter("random") != null) {
-			//generate Random
+		String path = "/service/homepage.html";
+
+		if (request.getParameter("deleteOrder") != null) {
+			System.out.println("in deleteOrder");
+			request.getSession().removeAttribute("order");
+			
+			path = servletContext.getContextPath() + "/GoToHomepage";
+			System.out.println("before send redirect");
+			response.sendRedirect(path);
+		} else if (request.getParameter("login") != null || user == null) {
+
+			request.getSession().setAttribute("onlyLogin", true);
+			path = servletContext.getContextPath() + "/GoToLogin";
+			response.sendRedirect(path);
 		} else {
-			//default
+
+			// maybe stateful?
+			orderService.confirmOrder(order);
+
+			if (request.getParameter("valid") != null) {
+				// payment ok
+				orderService.orderActivated(order);
+			} else if (request.getParameter("notValid") != null) {
+				// payment wrong
+				orderService.orderRejected(order, user);
+			} else if (request.getParameter("random") != null) {
+				// generate Random
+			} else {
+				// possible
+				System.out.println("Entered in Third else in orderconfirmation.dopost(.)<");
+
+			}
+			ctx = new WebContext(request, response, servletContext, request.getLocale());
+			templateEngine.process(path, ctx, response.getWriter());
 		}
+
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
 	}
-	
-	
-	private void orderActivated(Order order) {
-		orderService.setOrderValidity(order, true);
-		dbService.createActivationSchedule(order);		
-	}
-	
-	private void orderRejected(Order order, User user) {
-		orderService.setOrderValidity(order, false);
-		userService.userInsolvent(user);
-		//dbService.createAuditing(order, user);
-	}
-		
-}
 
+}

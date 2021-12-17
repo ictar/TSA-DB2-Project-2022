@@ -26,12 +26,6 @@ public class DbService {
 	@PersistenceContext(unitName = "TSAEJB")
 	private EntityManager em;
 
-	public DbService() {
-	}
-
-
-	
-
 	public ServicePackage retrieveServicePackage(int servicePackageId) {
 		return em.createNamedQuery("ServicePackage.findOne", ServicePackage.class).setParameter(1, servicePackageId)
 				.getResultList().get(0);
@@ -40,9 +34,6 @@ public class DbService {
 	public List<ServicePackage> findAllServicePackages() {
 		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
 	}
-
-
-
 
 	public void createActivationSchedule(Order order) {
 		ActivationSchedule as = new ActivationSchedule();

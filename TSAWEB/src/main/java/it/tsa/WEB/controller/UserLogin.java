@@ -21,6 +21,7 @@ import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.exceptions.LoginErrorException;
 import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.UserService;
 
 /**
  * Servlet implementation class CreatePhoto
@@ -62,40 +63,23 @@ public class UserLogin extends HttpServlet {
 
 		try {
 			User success = userService.checkCredentials(username, password);
-			//Order order = dbService.getOrder(success);
-/*
- stateful service defined by teacher, useless to us so far
- 
-			QueryService qService = null;
-			try {
+			Order createdOrder = (Order) request.getSession().getAttribute("order");
+			request.getSession().removeAttribute("onlyLogin");
 
-				/*
-				 * We need one distinct EJB for each user. Get the Initial Context for the JNDI
-				 * lookup for a local EJB. Note that the path may be different in different EJB
-				 * environments. In IntelliJ use: ic.lookup(
-				 * "java:/openejb/local/ArtifactFileNameWeb/ArtifactNameWeb/QueryServiceLocalBean"
-				 * );
-				 */
-/*
-				InitialContext ic = new InitialContext(); // Retrieve the EJB using JNDI lookup 
-				qService = (QueryService) ic.lookup("java:/openejb/local/QueryServiceLocalBean");
-			} catch (Exception e) {
-				e.printStackTrace();
-
-			}
-			request.getSession().setAttribute("queryService", qService);
-*/
 			// go to homepage calling GoToHomepage servlet
 			request.getSession().setAttribute("user", success);
-			path = getServletContext().getContextPath() + "/GoToHomepage";
+			if(createdOrder != null)
+				path = servletContext.getContextPath() + "/BuyService";
+			else
+				path = servletContext.getContextPath() + "/GoToHomepage";
 			response.sendRedirect(path);
-
+			
 		} catch (LoginErrorException e) {
 
 			ctx = new WebContext(request, response, servletContext, request.getLocale());
 			ctx.setVariable("errorMsgLogin", "Wrong us or pass");
-			String paath = "/index.html";
-			templateEngine.process(paath, ctx, response.getWriter());
+			path = "/index.html";
+			templateEngine.process(path, ctx, response.getWriter());
 		
 		}
 	}

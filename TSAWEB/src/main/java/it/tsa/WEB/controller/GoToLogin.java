@@ -16,7 +16,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
@@ -24,8 +23,8 @@ import it.tsa.EJB.services.DbService;
 /**
  * Servlet implementation class GoToHomePage
  */
-@WebServlet("/GoToHomepage")
-public class GoToHomepage extends HttpServlet {
+@WebServlet("/GoToLogin")
+public class GoToLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private TemplateEngine templateEngine;
@@ -46,16 +45,15 @@ public class GoToHomepage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String path = "/service/homepage.html";
-		List<Order> rejectedOrders;
-
-		User loggedUser = (User) request.getSession().getAttribute("user");
-		rejectedOrders = loggedUser.getOrders().stream().filter(order -> !order.isRejectedFlag()).toList();
+		String path = "/index.html";
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("rejectedOrders", rejectedOrders);
-		//TODO how to make it nicer
-		ctx.setVariable("user", loggedUser);
-		ctx.setVariable("userIsLogged", loggedUser != null);
+
+		boolean onlyLogin = (boolean) request.getSession().getAttribute("onlyLogin");
+		if (request.getAttribute("registrationResult") != null) {
+			boolean registrationResult = (boolean) request.getAttribute("registrationResult");
+			ctx.setVariable("registrationResult", registrationResult);
+		}
+		ctx.setVariable("onlyLogin", onlyLogin);
 		templateEngine.process(path, ctx, response.getWriter());
 
 	}
@@ -66,4 +64,3 @@ public class GoToHomepage extends HttpServlet {
 	}
 
 }
-

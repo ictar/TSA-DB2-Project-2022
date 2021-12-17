@@ -1,9 +1,10 @@
-package it.tsa.WEB.controller;
+package it.tsa.EJB.services;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +20,12 @@ public class OrderService {
 
 	@PersistenceContext(unitName = "TSAEJB")
 	private EntityManager em;
-	
+
+	@EJB
+	private DbService dbService;
+
+	@EJB
+	private UserService userService;
 
 	public Order getOrder(User user) {
 		return em.createNamedQuery("Order.getUserOrders", Order.class).setParameter(1, user).getResultList().get(0);
@@ -50,6 +56,7 @@ public class OrderService {
 		newOrder.setTotalvalue(newOrder.computeTotalCost());
 		newOrder.setValidityFlag(true);
 		newOrder.setStartDate(startDate);
+		System.out.println("Start date in orderservice createorder" + newOrder.getStartDate());
 		return newOrder;
 	}
 	
@@ -59,8 +66,16 @@ public class OrderService {
 		em.flush();
 	}
 	
+	public void orderActivated(Order order) {
+		setOrderValidity(order, true);
+		dbService.createActivationSchedule(order);
+	}
 
-	
+	public void orderRejected(Order order, User user) {
+		setOrderValidity(order,false);
+		userService.userInsolvent(user);
+		//dbService.createAuditing(order, user);
+	}
 
 	public void setOrderValidity(Order order, boolean valid) {
 		Order a = em.find(Order.class, order.getId());

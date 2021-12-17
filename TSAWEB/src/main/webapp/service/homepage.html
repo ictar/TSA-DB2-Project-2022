@@ -7,15 +7,22 @@
 </head>
 <body>
 
-	<div align="right" th:if = "${userIsLogged}">
+	<div align="right" th:if="${userIsLogged}">
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
-	
+
 	<div>
-		What you can do:
-		
-		<a th:href="@{/BuyService}">Buy Service</a>
-		<a th:if = "${user.insolventFlag}" th:href="@{/RejectedOrderService}">Check rejected orders</a>
+		What you can do: <a th:href="@{/BuyService}">Buy Service</a><br>
+		<div th:if="${user.insolventFlag}">
+			Rejected orders:
+			<table>
+				<tr th:each="ro : ${rejectedOrders}">
+					<td><p th:text="${ro.id}"/></td>
+					<td><input type="submit" value="Fix" /></td>
+				</tr>
+			</table>
+			<!-- <a th:href="@{/RejectedOrderService}">Check rejected orders</a>-->
+		</div>
 	</div>
 </body>
 </html>

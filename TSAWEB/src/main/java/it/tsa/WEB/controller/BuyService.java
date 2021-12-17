@@ -24,6 +24,7 @@ import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.OrderService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -56,18 +57,25 @@ public class BuyService extends HttpServlet {
 			throws ServletException, IOException {
 
 		User loggedUser = (User) request.getSession().getAttribute("user");
+		Order order = (Order) request.getSession().getAttribute("order");
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 		String path;
-		if (request.getParameter("confirmButton") == null) {
-			List<ServicePackage> servicePackages = null;
-			servicePackages = dbService.findAllServicePackages();
-			
-			System.out.println("Number of sp: " + servicePackages.size());
 
+		path = "/service/orderConfirmation.html";
+		
+		if (request.getParameter("confirmButton") == null && order == null) {
+			//if didnt press Confirm button then there is no order to confirm,
+			//so show possible services to buy
+			
 			path = "/service/buyservice.html";
 
+			//retrieves servicePackages to show
+			List<ServicePackage> servicePackages = null;
+			servicePackages = dbService.findAllServicePackages();
 			ctx.setVariable("servicePackages", servicePackages);
-		} else {
+			
+		} else if (order == null){
+			//pressed confirm button then collect all info
 
 			int chosenSP = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("servicePackageId")));
 			int chosenVP;
@@ -77,16 +85,20 @@ public class BuyService extends HttpServlet {
 					.split("-");
 		
 			//TODO maybe do some checking
-			Date startDate = new Date(Integer.parseInt(dateValue[0]) - 1901, Integer.parseInt(dateValue[1]),Integer.parseInt(dateValue[2]));
+			Date startDate = new Date(Integer.parseInt(dateValue[0]) - 1900, Integer.parseInt(dateValue[1])-1,Integer.parseInt(dateValue[2]));
+			System.out.println("Date in buyservicedoGet " + startDate);
 			String[] names = request.getParameterValues("availableOptProdId");
 			List<String> receivedChoicesOfOP = Arrays.asList(names);
 			List<Integer> chosenOptProds = getCorrectElements(receivedChoicesOfOP, chosenSP);
 			chosenVP = checkVPCorrectness(receivedVP, chosenSP);
 
-			Order order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
+			order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
 			request.getSession().setAttribute("order", order);
-			path = "/service/orderConfirmation.html";
 			ctx.setVariable("order", order);
+		} else {
+			order.setUser(loggedUser);
+			ctx.setVariable("order", order);	
+			
 		}
 		ctx.setVariable("userIsLogged", loggedUser != null);
 		templateEngine.process(path, ctx, response.getWriter());
@@ -111,6 +123,7 @@ public class BuyService extends HttpServlet {
 		return chosenOptProds;
 	}
 
+		//check validityPeriod correctness
 	private Integer checkVPCorrectness(String receivedVP, int chosenSP) {
 		String[] params = receivedVP.split(",");
 		if (Integer.parseInt(params[0]) == chosenSP)

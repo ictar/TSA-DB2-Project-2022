@@ -1,4 +1,4 @@
-package it.tsa.WEB.controller;
+package it.tsa.EJB.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class UserService {
 
 	@PersistenceContext(unitName = "TSAEJB")
 	private EntityManager em;
-	
+
 	public User checkCredentials(String usrn, String pwd) throws LoginErrorException {
 		List<User> uList = null;
 		try {
@@ -33,14 +33,11 @@ public class UserService {
 
 	public boolean createUser(String username, String pwd, String email) {
 
-		List<User> uList = new ArrayList<User>();
-		/*
-		 * try { //TODO define query in User class uList =
-		 * em.createNamedQuery("User.checkDuplicateUsername",
-		 * User.class).setParameter(1, username) .getResultList();
-		 * 
-		 * } catch (PersistenceException e) { return false; }
-		 */
+		List<User> uList;
+
+		uList = em.createNamedQuery("User.checkDuplicateUsername", User.class).setParameter(1, username)
+				.getResultList();
+
 		if (uList.isEmpty()) {
 			User newUser = new User();
 			newUser.setUsername(username);
@@ -54,7 +51,6 @@ public class UserService {
 			return false;
 
 	}
-	
 
 	public void userInsolvent(User user) {
 		User a = em.find(User.class, user.getId());
