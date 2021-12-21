@@ -1,6 +1,11 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<!-- 
+	variables needed: none
+	variables used: errorMsgLogin, registrationResult - string
+		onlyLogin - boolean
+ -->
 <meta charset="ISO-8859-1">
 <title>Album Management Home</title>
 <link rel="stylesheet" href="style.css">
@@ -42,3 +47,11 @@
 
 </body>
 </html>
+
+
+<!-- 
+	pages flow: index.html -> UserLogin.java -> GoToHomepage.java
+	-> homepage.html -> BuyService.java -> buyService.html 
+	-> BuyService.java -> orderConfirmation.html -> OrderConfirmation.java
+	-> GoToHomepage.java -> homepage.html
+ -->

@@ -53,8 +53,7 @@ public class UserService {
 	}
 
 	public void userInsolvent(User user) {
-		User a = em.find(User.class, user.getId());
-		a.setInsolvenetFlag(true);
-		em.merge(a);
+		user.failedPayment();
+		em.merge(user);
 	}
 }

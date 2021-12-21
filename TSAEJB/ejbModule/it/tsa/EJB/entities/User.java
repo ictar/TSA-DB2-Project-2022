@@ -10,8 +10,9 @@ import javax.persistence.*;
  *
  */
 @Entity
-@NamedQuery(name = "User.checkCredentials", query = "SELECT u From User u WHERE u.username=?1 and u.password=?2")
-@NamedQuery(name = "User.checkDuplicateUsername", query = "SELECT u From User u WHERE u.username=?1")
+@NamedQueries({
+	@NamedQuery(name = "User.checkCredentials", query = "SELECT u From User u WHERE u.username=?1 and u.password=?2"),
+@NamedQuery(name = "User.checkDuplicateUsername", query = "SELECT u From User u WHERE u.username=?1")})
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -83,26 +84,23 @@ public class User implements Serializable {
 	public boolean isInsolventFlag() {
 		return insolventFlag;
 	}
-	/**
-	 * @param  insolventFlag the insolventFlag to set
-	 */
-	public void setInsolvenetFlag(boolean flag) {
-		this.insolventFlag = flag;
-	}
+
 	/**
 	 * @return the numFailedPayments
 	 */
 	public int getNumFailedPayments() {
 		return numFailedPayments;
 	}
-	/**
-	 * @param numberOfFailedPayments the numberOfFailedPayments to set
-	 */
-	public void setNumFailedPayments(int numFailedPayments) {
-		this.numFailedPayments = numFailedPayments;
-	}
+
 	public int getId() {
 		return this.id;
+	}
+	
+	public int failedPayment() {
+		//need to place if(nfp<3)?
+		insolventFlag = true;
+		numFailedPayments++;
+		return numFailedPayments;
 	}
 	
 	public String toString() {

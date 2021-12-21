@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<!-- 
+	variables needed: userIsLogged - boolean
+		user - User
+		order - Order
+ -->
 <meta charset="ISO-8859-1">
 <title>Telco homepage</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
@@ -9,7 +14,7 @@
 
 
 	<div align="right" th:if="${userIsLogged}">
-		<a th:href="@{/Logout}">Logout</a>
+		<p th:text="${user.username}"/> <a th:href="@{/Logout}">Logout</a>
 	</div>
 	<form action="OrderConfirmation" method="POST">
 		Recap order: <br> Chosen servicePackage:

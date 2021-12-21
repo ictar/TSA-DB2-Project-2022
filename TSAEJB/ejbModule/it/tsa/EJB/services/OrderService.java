@@ -30,7 +30,6 @@ public class OrderService {
 	public Order getOrder(User user) {
 		return em.createNamedQuery("Order.getUserOrders", Order.class).setParameter(1, user).getResultList().get(0);
 	}
-	
 
 	public Order createOrder(User user, int chosenSP, int chosenVP, List<Integer> chosenOP, Date startDate) {
 		HashSet<OptProduct> chosenOptProds = new HashSet<OptProduct>();
@@ -59,27 +58,26 @@ public class OrderService {
 		System.out.println("Start date in orderservice createorder" + newOrder.getStartDate());
 		return newOrder;
 	}
-	
 
 	public void confirmOrder(Order order) {
 		em.persist(order);
 		em.flush();
 	}
-	
-	public void orderActivated(Order order) {
-		setOrderValidity(order, true);
-		dbService.createActivationSchedule(order);
+
+	public void addOrder(Order order, User user, boolean activated) {
+		setOrderValidity(order, activated);
+		if (activated)
+			dbService.createActivationSchedule(order);
+		else
+			userService.userInsolvent(user);
+
+		user.addOrder(order);
 	}
 
-	public void orderRejected(Order order, User user) {
-		setOrderValidity(order,false);
-		userService.userInsolvent(user);
-		//dbService.createAuditing(order, user);
-	}
-
-	public void setOrderValidity(Order order, boolean valid) {
-		Order a = em.find(Order.class, order.getId());
-		a.setValidityFlag(valid);
-		em.merge(a);
+	private void setOrderValidity(Order order, boolean valid) {
+		order.setValidityFlag(valid);
+		order.setRejectedFlag(!valid);
+		em.merge(order);
+		em.flush();
 	}
 }

@@ -40,6 +40,9 @@ public class OrderConfirmation extends HttpServlet {
 	@EJB(name = "project.services/OrderService")
 	private OrderService orderService;
 
+//	@EJB(name = "project.services/UserService")
+//	private UserService userService;
+
 	public void init() throws ServletException {
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
@@ -51,43 +54,62 @@ public class OrderConfirmation extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		System.out.println("FLOW: post OrderConfirmation");
 		Order order = (Order) request.getSession().getAttribute("order");
 		User user = (User) request.getSession().getAttribute("user");
-		String path = "/service/homepage.html";
+		String path;
 
 		if (request.getParameter("deleteOrder") != null) {
-			System.out.println("in deleteOrder");
+
+			System.out.println("FLOW: want to delete order created");
 			request.getSession().removeAttribute("order");
-			
+
 			path = servletContext.getContextPath() + "/GoToHomepage";
-			System.out.println("before send redirect");
-			response.sendRedirect(path);
+			System.out.println("FLOW: going to gotohomepageservlet");
 		} else if (request.getParameter("login") != null || user == null) {
 
+			System.out.println("FLOW: not logged. calling gotologin servlet");
 			request.getSession().setAttribute("onlyLogin", true);
 			path = servletContext.getContextPath() + "/GoToLogin";
-			response.sendRedirect(path);
 		} else {
 
+			System.out.println("FLOW: wants to confirm ordero");
+
+			System.out.println("Number of orders: " + user.getOrders().size());
+			System.out.println("Insolvent: " + user.isInsolventFlag());
 			// maybe stateful?
 			orderService.confirmOrder(order);
 
 			if (request.getParameter("valid") != null) {
+
+				System.out.println("FLOW: valid payment");
 				// payment ok
-				orderService.orderActivated(order);
+				orderService.addOrder(order, user, true);
 			} else if (request.getParameter("notValid") != null) {
+				System.out.println("FLOW: notvalidpayment");
 				// payment wrong
-				orderService.orderRejected(order, user);
+				orderService.addOrder(order, user, false);
 			} else if (request.getParameter("random") != null) {
 				// generate Random
 			} else {
 				// possible
-				System.out.println("Entered in Third else in orderconfirmation.dopost(.)<");
+				System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
 
 			}
-			ctx = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, ctx, response.getWriter());
+
+			System.out.println("FLOW: afterOrderUpdate");
+
+			//here insolventFlag is updated, order list in user not updated
+			System.out.println("Number of orders: " + user.getOrders().size());
+			System.out.println("Insolvent: " + user.isInsolventFlag());
+
+//			request.getSession().setAttribute("user", userService.);
+			request.getSession().removeAttribute("order");
+			System.out.println("FLOW: calling gotohomepage servlet");
+			path = servletContext.getContextPath() + "/GoToHomepage";
 		}
+		response.sendRedirect(path);
 
 	}
 

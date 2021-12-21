@@ -55,6 +55,7 @@ public class UserLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		System.out.println("FLOW: PostUserLogin");
 		String path;
 		
 		// get values from html page
@@ -68,10 +69,14 @@ public class UserLogin extends HttpServlet {
 
 			// go to homepage calling GoToHomepage servlet
 			request.getSession().setAttribute("user", success);
-			if(createdOrder != null)
+			if(createdOrder != null) {
 				path = servletContext.getContextPath() + "/BuyService";
-			else
+//				System.out.println("FLOW: callingBuyserviceServlet");
+			}
+			else {
 				path = servletContext.getContextPath() + "/GoToHomepage";
+//				System.out.println("FLOW: callingGotohomepage servlet");
+			}
 			response.sendRedirect(path);
 			
 		} catch (LoginErrorException e) {

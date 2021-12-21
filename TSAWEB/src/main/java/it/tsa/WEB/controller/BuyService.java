@@ -43,7 +43,7 @@ public class BuyService extends HttpServlet {
 
 	@EJB(name = "project.services/OrderService")
 	private OrderService orderService;
-	
+
 	public void init() throws ServletException {
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
@@ -62,43 +62,54 @@ public class BuyService extends HttpServlet {
 		String path;
 
 		path = "/service/orderConfirmation.html";
-		
+
 		if (request.getParameter("confirmButton") == null && order == null) {
-			//if didnt press Confirm button then there is no order to confirm,
-			//so show possible services to buy
-			
+			// if didnt press Confirm button then there is no order to confirm,
+			// so show possible services to buy
+
+			System.out.println("FLOW: getBuyservice conf null, order null");
 			path = "/service/buyservice.html";
 
-			//retrieves servicePackages to show
+			// retrieves servicePackages to show
 			List<ServicePackage> servicePackages = null;
 			servicePackages = dbService.findAllServicePackages();
 			ctx.setVariable("servicePackages", servicePackages);
-			
-		} else if (order == null){
-			//pressed confirm button then collect all info
+			ctx.setVariable("user", loggedUser);
 
+		} else if (order == null) {
+			// pressed confirm button then collect all info
+
+			System.out.println("FLOW: getBuyservice onlyordernull");
 			int chosenSP = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("servicePackageId")));
 			int chosenVP;
 			String receivedVP = StringEscapeUtils.escapeJava(request.getParameter("validityPeriodId"));
-			
-			String dateValue[] = StringEscapeUtils.escapeJava(request.getParameter("startDate"))
-					.split("-");
-		
-			//TODO maybe do some checking
-			Date startDate = new Date(Integer.parseInt(dateValue[0]) - 1900, Integer.parseInt(dateValue[1])-1,Integer.parseInt(dateValue[2]));
+
+			String dateValue[] = StringEscapeUtils.escapeJava(request.getParameter("startDate")).split("-");
+
+			// TODO maybe do some checking
+			Date startDate = new Date(Integer.parseInt(dateValue[0]) - 1900, Integer.parseInt(dateValue[1]) - 1,
+					Integer.parseInt(dateValue[2]));
 			System.out.println("Date in buyservicedoGet " + startDate);
 			String[] names = request.getParameterValues("availableOptProdId");
-			List<String> receivedChoicesOfOP = Arrays.asList(names);
-			List<Integer> chosenOptProds = getCorrectElements(receivedChoicesOfOP, chosenSP);
+			List<Integer> chosenOptProds = new ArrayList<Integer>();
+			if (names != null) {
+				List<String> receivedChoicesOfOP = Arrays.asList(names);
+				chosenOptProds = getCorrectElements(receivedChoicesOfOP, chosenSP);
+			}
+
 			chosenVP = checkVPCorrectness(receivedVP, chosenSP);
 
 			order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
 			request.getSession().setAttribute("order", order);
+			ctx.setVariable("user", loggedUser);
 			ctx.setVariable("order", order);
 		} else {
+			// get here after being asked to login to confirm order
+
+			System.out.println("FLOW: getBuyservice order present and now logged");
 			order.setUser(loggedUser);
-			ctx.setVariable("order", order);	
-			
+			ctx.setVariable("order", order);
+
 		}
 		ctx.setVariable("userIsLogged", loggedUser != null);
 		templateEngine.process(path, ctx, response.getWriter());
@@ -110,12 +121,18 @@ public class BuyService extends HttpServlet {
 		doGet(request, response);
 	}
 
-	//chosen opt prods are defined by two numbers: x,y
-		//x: service package id
-		//y: opt prod id
-		private List<Integer> getCorrectElements(List<String> originalElements, int correctId) {
-			List<Integer> chosenOptProds = originalElements.stream()
-					.filter(op -> op.startsWith(correctId + ",")) //looks for items starting with correct service package
+	// chosen opt prods are defined by two numbers: x,y
+	// x: service package id
+	// y: opt prod id
+	private List<Integer> getCorrectElements(List<String> originalElements, int correctId) {
+		List<Integer> chosenOptProds = originalElements.stream().filter(op -> op.startsWith(correctId + ",")) // looks
+																												// for
+																												// items
+																												// starting
+																												// with
+																												// correct
+																												// service
+																												// package
 				.map(op -> op.split(",")[1]) // removes the first part (x,) leaving only y
 				.map(op -> Integer.parseInt(op)) // convert to int
 				.toList();
@@ -123,7 +140,7 @@ public class BuyService extends HttpServlet {
 		return chosenOptProds;
 	}
 
-		//check validityPeriod correctness
+	// check validityPeriod correctness
 	private Integer checkVPCorrectness(String receivedVP, int chosenSP) {
 		String[] params = receivedVP.split(",");
 		if (Integer.parseInt(params[0]) == chosenSP)
