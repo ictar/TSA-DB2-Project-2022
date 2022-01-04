@@ -44,12 +44,15 @@ public class ServicePkgService {
 		svcPkg.setAvailableServices(services);
 		
 		// retrieve prods
-		Set<OptProduct> prods = new HashSet<OptProduct> ();
-		for(int id: pids) {
-			OptProduct prod = em.find(OptProduct.class, id);
-			prods.add(prod);
+		if(pids != null && pids.length > 0) {
+			Set<OptProduct> prods = new HashSet<OptProduct> ();
+			for(int id: pids) {
+				OptProduct prod = em.find(OptProduct.class, id);
+				prods.add(prod);
+			}
+			svcPkg.setAvailableOptProds(prods);
 		}
-		svcPkg.setAvailableOptProds(prods);
+		
 		
 		try {
 			em.persist(svcPkg);

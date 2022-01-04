@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Sales Report</title>
 </head>
 <body>
 
@@ -16,12 +16,12 @@
 		<th> Package </th>
 		<th> Total Purchases </th>
 	</tr>
-	<tr th:each="pp : ${packagePurchaseMap}">
-		<td th:text="${pp.key}"></td>
-		<td th:text="${pp.value}"></td>
+	<tr th:each="pp : ${packagePurchaseList}">
+		<td th:text="${pp[0]}"></td>
+		<td th:text="${pp[1]}"></td>
 	</tr>
 </table>
-
+<p th:text=" ${ppErrMsg}"></p>
 <hr />
 
 <h3>Number of total purchases per package and validity period: </h3>
@@ -31,46 +31,127 @@
 		<th> Validity Period </th>
 		<th> Total Purchases </th>
 	</tr>
-	<tr th:each="pp : ${packageVPPurchaseMap}">
-		<td th:text="${pp.key.getServiePackage()}"></td>
-		<td th:text="${pp.key.getValidityPeriod()}"></td>
-		<td th:text="${pp.value}"></td>
+	<tr th:each="pp : ${packageVPPurchaseList}">
+		<td th:text="${pp[0]}"></td>
+		<td th:text="${pp[1]}"></td>
+		<td th:text="${pp[2]}"></td>
 	</tr>
 </table>
+<p th:text=" ${pvppErrMsg}"></p>
 <hr />
 
-<h3>Total value of sales per package with and without the optional products: </h3>
+<h3>Total value of sales per package with the optional products: </h3>
+<table>
+	<tr>
+		<th> Package </th>
+		<th> Total value of sales </th>
+	</tr>
+	<tr th:each="e : ${packageSaleWProdList}">
+		<td th:text="${e[0]}"></td>
+		<td th:text="${e[1]}"></td>
+	</tr>
+</table>
+<p th:text=" ${pswpErrMsg}"></p>
+<hr />
 
+<h3>Total value of sales per package without the optional products: </h3>
+<table>
+	<tr>
+		<th> Package </th>
+		<th> Total value of sales </th>
+	</tr>
+	<tr th:each="e : ${packageSaleNProdList}">
+		<td th:text="${e[0]}"></td>
+		<td th:text="${e[1]}"></td>
+	</tr>
+</table>
+<p th:text=" ${psnpErrMsg}"></p>
 <hr />
 
 <h3>Average number of optional products sold together with each service package.</h3>
-
+<table>
+	<tr>
+		<th> Package </th>
+		<th> Average number of optional products sold </th>
+	</tr>
+	<tr th:each="e : ${avgSaleProdPerSPList}">
+		<td th:text="${e[0]}"></td>
+		<td th:text="${e[1]}"></td>
+	</tr>
+</table>
+<p th:text=" ${asppspErrMsg}"></p>
 <hr />
 
-<h3>List of insolvent users:</h3>
-<div th:if="${!insolventUserList.isEmpty()}">
-	<span th:each="iu: ${insolventUserList}">
-		<ul>
-			<li th:text="${iu.getUsername()}"></li>
-		</ul>
-	</span>
+<h3>Insolvent Users</h3>
+<div th:if="${insolventUserList == null || insolventUserList.isEmpty()}">
+	<p> No Data</p>
+</div>
+<div th:if="${!(insolventUserList == null || insolventUserList.isEmpty())}">
+	<table>
+		<tr>
+			<th>User Id</th><th>User Name</th><th>Email</th>
+		</tr>
+		<tr th:each="iu: ${insolventUserList}">
+			<td th:text="${iu.getId()}"></td>
+			<td th:text="${iu.getUsername()}"></td>
+			<td th:text="${iu.getEmail()}"></td>
+		</tr>
+	</table>
+	<p th:text=" ${iuErrMsg}"></p>
 </div>
 <hr />
 
-<h3>List of suspended orders and alerts:</h3>
-<div th:if="${!insolventUserList.isEmpty()}">
-	<span th:each="iu: ${insolventUserList}">
-		<ul>
-			<li th:text="${iu.getUsername()}"></li>
-		</ul>
-	</span>
+<h3>Suspended Orders</h3>
+<div th:if="${suspOrderList == null || suspOrderList.isEmpty()}">
+	<p> No Data</p>
+</div>
+<div th:if="${!(suspOrderList == null || suspOrderList.isEmpty())}">
+	<table>
+		<tr>
+			<th>Order Id</th><th>User Id</th><th>Service Package Id</th><th>Creation Date</th><th>Creation Hour</th><th>Total Value</th>
+		</tr>
+		<tr th:each="so: ${suspOrderList}">
+			<td th:text="${so.getId()}"></td>
+			<td th:text="${so.getUserId()}"></td>
+			<td th:text="${so.getServicePkgId()}"></td>
+			<td th:text="${so.getDateOfCreation()}"></td>
+			<td th:text="${so.getHourOfCreation()}"></td>
+			<td th:text="${so.getTotalValue()}"></td>
+	</table>
+	<p th:text=" ${soErrMsg}"></p>
+</div>
+<hr />
+
+<h3>Alerts</h3>
+<div th:if="${auditList == null || auditList.isEmpty()}">
+	<p> No Data</p>
+</div>
+<div th:if="${!(auditList == null || auditList.isEmpty())}">
+	<table>
+		<tr>
+			<th>Id</th><th>User Id</th><th>User Name</th><th>Email</th><th>Amount</th><th>Last Rejection Time</th>
+		</tr>
+		<tr th:each="ad: ${auditList}">
+			<td th:text="${ad.getId()}"></td>
+			<td th:text="${ad.getUserId()}"></td>
+			<td th:text="${ad.getUsername()}"></td>
+			<td th:text="${ad.getEmail()}"></td>
+			<td th:text="${ad.getAmount()}"></td>
+			<td th:text="${ad.getLastRejectionTime()}"></td>
+		</tr>
+	</table>
+	<p th:text=" ${audErrMsg}"></p>
 </div>
 <hr />
 
 <h3>Best seller optional product</h3>
-<div th:if="${bestOptProd != ''}">
-	<p th:text="${bestOptPro}"></p>
+<div th:if="${bestOptProd != null}">
+	<p> No Data</p>
 </div>
+<div th:if="${bestOptProd != null}">
+	<p th:text="${bestOptPro.getName()}"></p>
+</div>
+<p th:text=" ${bspErrMsg}"></p>
 
 </body>
 </html>

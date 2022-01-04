@@ -56,7 +56,7 @@ CREATE TABLE `validityPeriod` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `monthDuration` int(11) NOT NULL,
     `price` decimal(9,2)  NOT NULL,
-    `servicePkgId` int(11) NOT NULL,
+    `servicePkgId` int(11),
 
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_validityPeriod_servicePkgId` FOREIGN KEY (`servicePkgId`) REFERENCES `servicePkg`(`id`)

@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "orders")
+@NamedQuery(name = "Order.getSuspended", query = "SELECT o From Order o WHERE o.rejectedFlag = 1")
 public class Order {
 	
 	@Id

@@ -1,6 +1,6 @@
 package it.tsa.EJB.services;
 
-import java.util.Collection;
+
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
 
 import it.tsa.EJB.entities.Employee;
 import it.tsa.EJB.exceptions.CredentialsException;
