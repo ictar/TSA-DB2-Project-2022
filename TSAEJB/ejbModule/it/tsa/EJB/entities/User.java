@@ -15,9 +15,7 @@ import org.eclipse.persistence.config.QueryHints;
 @Entity
 @NamedQueries({
 	@NamedQuery(name = "User.checkCredentials", query = "SELECT u From User u WHERE u.username=?1 and u.password=?2", hints =@QueryHint(name= QueryHints.REFRESH, value= HintValues.TRUE)),
-  @NamedQuery(name = "User.checkDuplicateUsername", query = "SELECT u From User u WHERE u.username=?1"),
-  @NamedQuery(name = "User.getInsolvents", query = "SELECT u From User u WHERE u.insolventFlag = 1")
-})
+@NamedQuery(name = "User.checkDuplicateUsername", query = "SELECT u From User u WHERE u.username=?1")})
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -132,16 +130,13 @@ public class User implements Serializable {
 	
 	public void decreaseFailedPayments() {
 		boolean hasRejectedOrder = false;
-		if (numFailedPayments>0)
-			numFailedPayments--;
+		
+		numFailedPayments =0;
 		for(int i = 0; i<orders.size(); i++) {
 			if (orders.get(i).isRejectedFlag())
 				hasRejectedOrder = true;
 		}
 
-		if (!hasRejectedOrder) {
-			numFailedPayments = 0;
-			insolventFlag = false;
-		}
+		insolventFlag = hasRejectedOrder;
 	}
 }

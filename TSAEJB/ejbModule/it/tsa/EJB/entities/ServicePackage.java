@@ -62,14 +62,6 @@ public class ServicePackage {
 		this.orders = orders;
 	}
 
-	public void setValidityPeriods(Set<ValidityPeriod> validityPeriods) {
-		this.validityPeriods = validityPeriods;
-	}
-
-	public void setAvailableOptProds(Set<OptProduct> availableOptProds) {
-		this.availableOptProds = availableOptProds;
-	}
-
 	public Set<Service> getavailableServices() {
 		return availableServices;
 	}
@@ -80,14 +72,6 @@ public class ServicePackage {
 	
 	public Set<ValidityPeriod> getValidityPeriods(){
 		return validityPeriods;
-	}
-
-	public Set<Service> getAvailableServices() {
-		return availableServices;
-	}
-
-	public void setAvailableServices(Set<Service> availableServices) {
-		this.availableServices = availableServices;
 	}
 
 	public void setValidityPeriods(Set<ValidityPeriod> validityPeriods) {

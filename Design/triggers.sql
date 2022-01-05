@@ -76,6 +76,23 @@ BEGIN
 		END IF;
 	END IF;
     
-END; //
+END; 
+
+CREATE TRIGGER `user_AFTER_UPDATE`
+AFTER UPDATE ON `user`
+FOR EACH ROW BEGIN
+	DECLARE totalAmount float;
+	DECLARE currentTime timestamp;
+    set currentTime = current_timestamp();
+	IF (new.numFailedPayments = 3 and new.numFailedPayments <> old.numFailedPayments) THEN
+	set totalAmount = (SELECT sum(totalValue) FROM orders where userId = new.id and rejectedFlag = 1);
+
+	insert into telcoservicedb.auditing (userId, username, email, amount, lastRejectionTime) values (new.id, new.username, new.email, totalAmount, currentTime);
+	END IF;
+END
+
+
+
+//
 
 DELIMITER ;
