@@ -45,6 +45,7 @@ public class BuyService extends HttpServlet {
 	private OrderService orderService;
 
 	public void init() throws ServletException {
+		System.out.println("Start buyservcie");
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -56,30 +57,29 @@ public class BuyService extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		User loggedUser = (User) request.getSession().getAttribute("user");
-		Order order = (Order) request.getSession().getAttribute("order");
-		ctx = new WebContext(request, response, servletContext, request.getLocale());
 		String path;
 
+		User loggedUser = (User) request.getSession().getAttribute("user");
+		Order order = (Order) request.getSession().getAttribute("order");
+		
+		ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		path = "/service/orderConfirmation.html";
 
-		if (request.getParameter("confirmButton") == null && order == null) {
+		if (needsToCreateOrder(request, order)) {
 			// if didnt press Confirm button then there is no order to confirm,
 			// so show possible services to buy
 
-			System.out.println("FLOW: getBuyservice conf null, order null");
 			path = "/service/buyservice.html";
 
 			// retrieves servicePackages to show
 			List<ServicePackage> servicePackages = null;
 			servicePackages = dbService.findAllServicePackages();
 			ctx.setVariable("servicePackages", servicePackages);
-			ctx.setVariable("user", loggedUser);
 
-		} else if (order == null) {
+		} else if (definedAndWantsToCreateOrder(order)) {
 			// pressed confirm button then collect all info
 
-			System.out.println("FLOW: getBuyservice onlyordernull");
 			int chosenSP = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("servicePackageId")));
 			int chosenVP;
 			String receivedVP = StringEscapeUtils.escapeJava(request.getParameter("validityPeriodId"));
@@ -89,7 +89,6 @@ public class BuyService extends HttpServlet {
 			// TODO maybe do some checking
 			Date startDate = new Date(Integer.parseInt(dateValue[0]) - 1900, Integer.parseInt(dateValue[1]) - 1,
 					Integer.parseInt(dateValue[2]));
-			System.out.println("Date in buyservicedoGet " + startDate);
 			String[] names = request.getParameterValues("availableOptProdId");
 			List<Integer> chosenOptProds = new ArrayList<Integer>();
 			if (names != null) {
@@ -98,22 +97,25 @@ public class BuyService extends HttpServlet {
 			}
 
 			chosenVP = checkVPCorrectness(receivedVP, chosenSP);
+			if (chosenVP != -1) {
+				order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
+				request.getSession().setAttribute("order", order);
+				ctx.setVariable("order", order);
+			}
+			else {
+				System.out.println("ERRORE IN VP");
+				path = servletContext.getContextPath() + "/GoToHomepage";
+			}
 
-			order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
-			request.getSession().setAttribute("order", order);
-			ctx.setVariable("user", loggedUser);
-			ctx.setVariable("order", order);
 		} else {
 			// get here after being asked to login to confirm order
 
-			System.out.println("FLOW: getBuyservice order present and now logged");
 			order.setUser(loggedUser);
 			ctx.setVariable("order", order);
-
 		}
-		ctx.setVariable("userIsLogged", loggedUser != null);
+		ctx.setVariable("user", loggedUser);
+		
 		templateEngine.process(path, ctx, response.getWriter());
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -141,12 +143,21 @@ public class BuyService extends HttpServlet {
 	}
 
 	// check validityPeriod correctness
-	private Integer checkVPCorrectness(String receivedVP, int chosenSP) {
+	private int checkVPCorrectness(String receivedVP, int chosenSP) {
+		System.out.println("CheckVPCorrectness " + receivedVP);
 		String[] params = receivedVP.split(",");
 		if (Integer.parseInt(params[0]) == chosenSP)
 			return Integer.parseInt(params[1]);
 		else
-			return null;
+			return -1;
+	}
+
+	private boolean needsToCreateOrder(HttpServletRequest request, Order order) {
+		return request.getParameter("confirmButton") == null && order == null;
+	}
+
+	private boolean definedAndWantsToCreateOrder(Order order) {
+		return order == null;
 	}
 
 }

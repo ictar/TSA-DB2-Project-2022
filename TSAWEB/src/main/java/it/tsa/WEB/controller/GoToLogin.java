@@ -35,6 +35,8 @@ public class GoToLogin extends HttpServlet {
 	private DbService dbService;
 
 	public void init() throws ServletException {
+		System.out.println("Start gotologin");
+
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);

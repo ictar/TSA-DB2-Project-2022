@@ -1,6 +1,7 @@
 package it.tsa.WEB.controller;
 
 import java.io.*;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
@@ -23,9 +24,6 @@ import it.tsa.EJB.exceptions.LoginErrorException;
 import it.tsa.EJB.services.DbService;
 import it.tsa.EJB.services.UserService;
 
-/**
- * Servlet implementation class CreatePhoto
- */
 @WebServlet("/UserLogin")
 public class UserLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -55,10 +53,8 @@ public class UserLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		System.out.println("FLOW: PostUserLogin");
 		String path;
-		
-		// get values from html page
+
 		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 
@@ -66,17 +62,13 @@ public class UserLogin extends HttpServlet {
 			User success = userService.checkCredentials(username, password);
 			Order createdOrder = (Order) request.getSession().getAttribute("order");
 			request.getSession().removeAttribute("onlyLogin");
-
-			// go to homepage calling GoToHomepage servlet
+			
 			request.getSession().setAttribute("user", success);
-			if(createdOrder != null) {
+			if(createdOrder != null) 
 				path = servletContext.getContextPath() + "/BuyService";
-//				System.out.println("FLOW: callingBuyserviceServlet");
-			}
-			else {
+			else
 				path = servletContext.getContextPath() + "/GoToHomepage";
-//				System.out.println("FLOW: callingGotohomepage servlet");
-			}
+			
 			response.sendRedirect(path);
 			
 		} catch (LoginErrorException e) {

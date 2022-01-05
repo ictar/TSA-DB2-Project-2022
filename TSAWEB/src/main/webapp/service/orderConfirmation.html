@@ -6,6 +6,11 @@
 		user - User
 		order - Order
  -->
+ 
+ <!-- 
+ 	display order details then allow to confirm
+ 	needs order
+  -->
 <meta charset="ISO-8859-1">
 <title>Telco homepage</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
@@ -13,7 +18,7 @@
 <body>
 
 
-	<div align="right" th:if="${userIsLogged}">
+	<div align="right" th:if="${user != null}">
 		<p th:text="${user.username}"/> <a th:href="@{/Logout}">Logout</a>
 	</div>
 	<form action="OrderConfirmation" method="POST">
@@ -31,13 +36,13 @@
 		<p th:text="${order.startDate}" />
 		Total value:
 		<p th:text="${order.totalvalue}" />
-		<div th:if="${userIsLogged}">
+		<div th:if="${user != null}">
 			<input type="submit" name="valid" value="Valid"> <input
 				type="submit" name="notValid" value="Not Valid"> <input
 				type="submit" name="random" value="Random">
 		</div>
 		<input type="submit" name="deleteOrder" value="Delete Order"/>
-		<input th:unless="${userIsLogged}" type="submit" name="login" value="Login"> 
+		<input th:unless="${user != null}" type="submit" name="login" value="Login"> 
 	</form>
 </body>
 </html>

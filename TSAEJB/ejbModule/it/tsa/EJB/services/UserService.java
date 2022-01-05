@@ -1,6 +1,5 @@
 package it.tsa.EJB.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -8,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
+import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.exceptions.LoginErrorException;
 
@@ -22,6 +22,7 @@ public class UserService {
 		try {
 			uList = em.createNamedQuery("User.checkCredentials", User.class).setParameter(1, usrn).setParameter(2, pwd)
 					.getResultList();
+
 		} catch (PersistenceException e) {
 			throw new LoginErrorException();
 		}
@@ -54,6 +55,11 @@ public class UserService {
 
 	public void userInsolvent(User user) {
 		user.failedPayment();
+		em.merge(user);
+	}
+	
+	public void fixUser(User user) {
+		user.decreaseFailedPayments();
 		em.merge(user);
 	}
 }

@@ -7,6 +7,7 @@
 		user - User
 		servicePackages - List<ServicePackage>
  -->
+ 
 <meta charset="ISO-8859-1">
 <title>Select package</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
@@ -19,7 +20,7 @@
 </head>
 <body>
 
-	<div align="right" th:if="${userIsLogged}">
+	<div align="right" th:if="${user != null}">
 		<p th:text="${user.username}" /> <a th:href="@{/Logout}">Logout</a>
 	</div>
 

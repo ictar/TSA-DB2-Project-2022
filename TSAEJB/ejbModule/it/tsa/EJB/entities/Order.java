@@ -129,12 +129,15 @@ public class Order {
 	public float computeTotalCost() {
 
 		float totalCost = validityPeriod.getPrice();
-		chosenOptProds.stream().forEach(op -> {
-			System.out.println("Price: " + op.getMonthlyFee());
+//		System.out.println("PRICE: ValPer " + totalCost);
+		/*chosenOptProds.stream().forEach(op -> {
+			System.out.println("PRICE: Single optProd" + op.getMonthlyFee());
 		});
-		totalCost = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalCost,
+	*/	totalCost = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalCost,
 				(a, b) -> a + b);
+//		System.out.println("PRICE: singleMonth " + totalCost);
 		totalCost *= validityPeriod.getMonthDuration();
+//		System.out.println("PRICE: total " + totalCost);
 		return totalCost;
 	}
 }

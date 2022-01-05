@@ -55,6 +55,8 @@ public class OrderService {
 		newOrder.setTotalvalue(newOrder.computeTotalCost());
 		newOrder.setValidityFlag(true);
 		newOrder.setStartDate(startDate);
+
+		//dont add order to user because this creates only Order instance
 		System.out.println("Start date in orderservice createorder" + newOrder.getStartDate());
 		return newOrder;
 	}
@@ -66,18 +68,32 @@ public class OrderService {
 
 	public void addOrder(Order order, User user, boolean activated) {
 		setOrderValidity(order, activated);
+		em.merge(order);
 		if (activated)
 			dbService.createActivationSchedule(order);
 		else
 			userService.userInsolvent(user);
 
 		user.addOrder(order);
+
+		em.flush();
 	}
 
+	public void fixOrder(Order order, User user, boolean activated) {
+		if (activated) {
+			setOrderValidity(order, activated);
+			em.merge(order);
+			userService.fixUser(user);
+		}
+		else
+			userService.userInsolvent(user);
+
+		em.merge(order);
+		em.flush();
+	}
+	
 	private void setOrderValidity(Order order, boolean valid) {
 		order.setValidityFlag(valid);
 		order.setRejectedFlag(!valid);
-		em.merge(order);
-		em.flush();
 	}
 }

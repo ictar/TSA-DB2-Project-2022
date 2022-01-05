@@ -55,15 +55,14 @@ public class UserRegister extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		// get values from html page
+		String result;
+		
 		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
 
 		boolean success = userService.createUser(username, password, email);
-		System.out.println("Success: "+ success);
-		String result;
+		
 		if (!success)
 			result = "Error occurred";
 		else

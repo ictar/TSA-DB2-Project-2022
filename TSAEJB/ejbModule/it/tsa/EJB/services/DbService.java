@@ -53,6 +53,7 @@ public class DbService {
 		em.persist(a);
 		em.flush();
 	}
+	
 	// examples
 	/*
 	 * public int insertArtist(String name) { Artist newArtist = new Artist();

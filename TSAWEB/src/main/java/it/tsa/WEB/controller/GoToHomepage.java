@@ -47,21 +47,19 @@ public class GoToHomepage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String path = "/service/homepage.html";
-		List<Order> rejectedOrders;
-//		System.out.println("FLOW: getGotohomepageservlet");
 
 		User loggedUser = (User) request.getSession().getAttribute("user");
-		System.out.println("Number of orders: " + loggedUser.getOrders().size());
-		System.out.println("Insolvent: " + loggedUser.isInsolventFlag());
-		rejectedOrders = loggedUser.getOrders().stream().filter(order -> order.isRejectedFlag()).toList();
+
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("rejectedOrders", rejectedOrders);
 
-		// TODO how to make it nicer
+		if (loggedUser != null) {
+			List<Order> rejectedOrders = loggedUser.getOrders().stream().filter(order -> order.isRejectedFlag())
+					.toList();
+			ctx.setVariable("rejectedOrders", rejectedOrders);
+		}
+
 		ctx.setVariable("user", loggedUser);
-		ctx.setVariable("userIsLogged", loggedUser != null);
 
-//		System.out.println("FLOW: callinghomepagehtml");
 		templateEngine.process(path, ctx, response.getWriter());
 
 	}
