@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<!-- 
+	variables needed: userIsLogged - boolean
+		user - User
+		rejectedOrders - List<Order>
+ -->
+ 
+ <!-- 
+ 	file sections:
+ 	- buy service
+ 	- rejected order if user is insolvent, needs rejected orders
+  -->
 <meta charset="ISO-8859-1">
 <title>Telco homepage</title>
 <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
 
-	<div align="right" th:if = "${userIsLogged}">
+	<div align="right" th:if="${user != null}">
+		<p th:text="${user.username}" />
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
-	
+
 	<div>
-		What you can do:
-		
-		<a th:href="@{/BuyService}">Buy Service</a>
-		<a th:if = "${user.insolventFlag}" th:href="@{/RejectedOrderService}">Check rejected orders</a>
+		What you can do: <a th:href="@{/BuyService}">Buy Service</a><br>
+		<form th:action="@{/RejectedOrder}" method="POST"  th:if="${user.insolventFlag}">
+			<div>
+				Rejected orders:
+				<table>
+					<tr th:each="ro : ${rejectedOrders}">
+						<td><input type="radio" th:value="${ro.id}" name="toFixOrderId"/></td>
+						<td><p th:text="${ro.id}" /></td>
+					</tr>
+				</table>
+				<input type="submit" value="Fix" />
+			</div>
+		</form>
 	</div>
 </body>
 </html>

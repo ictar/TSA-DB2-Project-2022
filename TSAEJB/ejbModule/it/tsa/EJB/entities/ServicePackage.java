@@ -10,7 +10,6 @@ import java.util.Set;
 @NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp")
 @NamedQuery(name = "ServicePackage.findOne", query = "SELECT sp FROM ServicePackage sp WHERE sp.id=?1")
 public class ServicePackage {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -45,7 +44,32 @@ public class ServicePackage {
 	public String getName() {
 		return name;
 	}
-	
+
+
+	public Set<Service> getAvailableServices() {
+		return availableServices;
+	}
+
+	public void setAvailableServices(Set<Service> availableServices) {
+		this.availableServices = availableServices;
+	}
+
+	public Set<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(Set<Order> orders) {
+		this.orders = orders;
+	}
+
+	public void setValidityPeriods(Set<ValidityPeriod> validityPeriods) {
+		this.validityPeriods = validityPeriods;
+	}
+
+	public void setAvailableOptProds(Set<OptProduct> availableOptProds) {
+		this.availableOptProds = availableOptProds;
+	}
+
 	public Set<Service> getavailableServices() {
 		return availableServices;
 	}

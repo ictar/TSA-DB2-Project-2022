@@ -5,16 +5,21 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
+
 /**
  * Entity implementation class for Entity: User
  *
  */
 @Entity
-@NamedQuery(name = "User.checkCredentials", query = "SELECT u From User u WHERE u.username=?1 and u.password=?2")
-@NamedQuery(name = "User.getInsolvents", query = "SELECT u From User u WHERE u.insolventFlag = 1")
+@NamedQueries({
+	@NamedQuery(name = "User.checkCredentials", query = "SELECT u From User u WHERE u.username=?1 and u.password=?2", hints =@QueryHint(name= QueryHints.REFRESH, value= HintValues.TRUE)),
+  @NamedQuery(name = "User.checkDuplicateUsername", query = "SELECT u From User u WHERE u.username=?1"),
+  @NamedQuery(name = "User.getInsolvents", query = "SELECT u From User u WHERE u.insolventFlag = 1")
+})
 public class User implements Serializable {
 
-	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -84,26 +89,23 @@ public class User implements Serializable {
 	public boolean isInsolventFlag() {
 		return insolventFlag;
 	}
-	/**
-	 * @param  insolventFlag the insolventFlag to set
-	 */
-	public void setInsolvenetFlag(boolean flag) {
-		this.insolventFlag = flag;
-	}
+
 	/**
 	 * @return the numFailedPayments
 	 */
 	public int getNumFailedPayments() {
 		return numFailedPayments;
 	}
-	/**
-	 * @param numberOfFailedPayments the numberOfFailedPayments to set
-	 */
-	public void setNumFailedPayments(int numFailedPayments) {
-		this.numFailedPayments = numFailedPayments;
-	}
+
 	public int getId() {
 		return this.id;
+	}
+	
+	public int failedPayment() {
+		//need to place if(nfp<3)?
+		insolventFlag = true;
+		numFailedPayments++;
+		return numFailedPayments;
 	}
 	
 	public String toString() {
@@ -126,5 +128,20 @@ public class User implements Serializable {
 	public void addAudit(Auditing audit) {
 		getAudits().add(audit);
 		audit.setUser(this);
+	}
+	
+	public void decreaseFailedPayments() {
+		boolean hasRejectedOrder = false;
+		if (numFailedPayments>0)
+			numFailedPayments--;
+		for(int i = 0; i<orders.size(); i++) {
+			if (orders.get(i).isRejectedFlag())
+				hasRejectedOrder = true;
+		}
+
+		if (!hasRejectedOrder) {
+			numFailedPayments = 0;
+			insolventFlag = false;
+		}
 	}
 }

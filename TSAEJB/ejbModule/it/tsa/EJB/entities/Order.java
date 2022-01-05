@@ -1,7 +1,6 @@
 package it.tsa.EJB.entities;
 
 
-import java.time.LocalTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "orders")
 @NamedQuery(name = "Order.getSuspended", query = "SELECT o From Order o WHERE o.rejectedFlag = 1")
+@NamedQuery(name = "Order.getUserOrders", query = "SELECT o FROM Order o WHERE o.user=?1")
 public class Order {
 	
 	@Id
@@ -21,10 +21,6 @@ public class Order {
 	private Date startDate;
 	private boolean validityFlag;
 	private boolean rejectedFlag;
-	
-	@OneToOne
-	@JoinColumn(name="activationScheduleId")
-	private ActivationSchedule activationSchedule;
 	
 	@ManyToOne
 	@JoinColumn(name = "validityPeriodId")
@@ -50,15 +46,7 @@ public class Order {
 	public int getId() {
 		return id;
 	}
-
-	public ActivationSchedule getActivationSchedule() {
-		return activationSchedule;
-	}
-
-	public void setActivationSchedule(ActivationSchedule activationSchedule) {
-		this.activationSchedule = activationSchedule;
-	}
-
+	
 	public ValidityPeriod getValidityPeriod() {
 		return validityPeriod;
 	}
@@ -139,4 +127,18 @@ public class Order {
 		this.user = user;
 		}
 	
+	public float computeTotalCost() {
+
+		float totalCost = validityPeriod.getPrice();
+//		System.out.println("PRICE: ValPer " + totalCost);
+		/*chosenOptProds.stream().forEach(op -> {
+			System.out.println("PRICE: Single optProd" + op.getMonthlyFee());
+		});
+	*/	totalCost = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalCost,
+				(a, b) -> a + b);
+//		System.out.println("PRICE: singleMonth " + totalCost);
+		totalCost *= validityPeriod.getMonthDuration();
+//		System.out.println("PRICE: total " + totalCost);
+		return totalCost;
+	}
 }

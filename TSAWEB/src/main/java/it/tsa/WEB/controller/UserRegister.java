@@ -18,6 +18,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.UserService;
 
 /**
  * Servlet implementation class CreatePhoto
@@ -30,8 +31,8 @@ public class UserRegister extends HttpServlet {
 	private ServletContext servletContext;
 	private WebContext ctx;
 
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
+	@EJB(name = "project.services/UserService")
+	private UserService userService;
 
 	public UserRegister() {
 		super();
@@ -54,25 +55,14 @@ public class UserRegister extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		// get values from html page
+		String result;
+		
 		String username = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
 
-		boolean success = dbService.createUser(username, password, email);
-		System.out.println("Success: "+ success);
-/*
-		if (!success) {
-			servletContext = getServletContext();
-			ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", "Incorrect username or password");
-		}
-		path = "/index.html";
-		templateEngine.process(path, ctx, response.getWriter());
-		*/
+		boolean success = userService.createUser(username, password, email);
 		
-		String result;
 		if (!success)
 			result = "Error occurred";
 		else
@@ -80,8 +70,7 @@ public class UserRegister extends HttpServlet {
 
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("registrationResult", result);
-		String path = "/index.html";
-		templateEngine.process(path, ctx, response.getWriter());
+		templateEngine.process("/index.html", ctx, response.getWriter());
 	
 	}
 

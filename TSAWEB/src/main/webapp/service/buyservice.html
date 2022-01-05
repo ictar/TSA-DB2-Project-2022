@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<!-- 
+	variables needed: userIsLogged - boolean
+		user - User
+		servicePackages - List<ServicePackage>
+ -->
+ 
 <meta charset="ISO-8859-1">
 <title>Select package</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
@@ -14,18 +20,27 @@
 </head>
 <body>
 
-	<div align="right" th:if="${userIsLogged}">
-		<a th:href="@{/Logout}">Logout</a>
+	<div align="right" th:if="${user != null}">
+		<p th:text="${user.username}" /> <a th:href="@{/Logout}">Logout</a>
 	</div>
 
 
-	<form th:action="@{BuyService}" method="POST">
+	<form th:action="@{/BuyService}" method="POST">
 		<table>
+			<th></th>
+			<th>Service Package</th>
+			<th>Service</th>
+			<th>Validity Periods</th>
+			<th>Optional Products</th>
 			<tr th:each="srvPkg : ${servicePackages}">
 				<td><input type="radio" th:value="${srvPkg.id}"
 					name="servicePackageId" /></td>
 				<td>
 					<p th:text="${srvPkg.name}" />
+				</td>
+				<td>
+					<p th:each="service: ${srvPkg.availableServices}"
+						th:text="${service.name}" />
 				</td>
 				<td>
 					<table>
@@ -45,7 +60,8 @@
 					<table>
 						<tr th:each="op : ${srvPkg.availableOptProds}">
 							<td><input type="checkbox"
-								th:value="${srvPkg.id} + ',' + ${op.id}" th:name="availableOptProdId" /></td>
+								th:value="${srvPkg.id} + ',' + ${op.id}"
+								th:name="availableOptProdId" /></td>
 							<td>
 								<p th:text="${op.name}" />
 							</td>
@@ -57,8 +73,8 @@
 				</td>
 			</tr>
 		</table>
-		<input type="date" name="startDate"/>
-		<input type="submit" name ="confirmButton" value="Confirm"/>
+		<input type="date" name="startDate" value="2022-01-01" /> <input
+			type="submit" name="confirmButton" value="Confirm" />
 	</form>
 </body>
 </html>
