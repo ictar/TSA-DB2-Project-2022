@@ -16,7 +16,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
@@ -24,8 +23,8 @@ import it.tsa.EJB.services.DbService;
 /**
  * Servlet implementation class GoToHomePage
  */
-@WebServlet("/GoToHomepage")
-public class GoToHomepage extends HttpServlet {
+@WebServlet("/GoToLogin")
+public class GoToLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private TemplateEngine templateEngine;
@@ -36,6 +35,8 @@ public class GoToHomepage extends HttpServlet {
 	private DbService dbService;
 
 	public void init() throws ServletException {
+		System.out.println("Start gotologin");
+
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -46,20 +47,15 @@ public class GoToHomepage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String path = "/service/homepage.html";
-
-		User loggedUser = (User) request.getSession().getAttribute("user");
-
+		String path = "/index.html";
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
-		if (loggedUser != null) {
-			List<Order> rejectedOrders = loggedUser.getOrders().stream().filter(order -> order.isRejectedFlag())
-					.toList();
-			ctx.setVariable("rejectedOrders", rejectedOrders);
+		boolean onlyLogin = (boolean) request.getSession().getAttribute("onlyLogin");
+		if (request.getAttribute("registrationResult") != null) {
+			boolean registrationResult = (boolean) request.getAttribute("registrationResult");
+			ctx.setVariable("registrationResult", registrationResult);
 		}
-
-		ctx.setVariable("user", loggedUser);
-
+		ctx.setVariable("onlyLogin", onlyLogin);
 		templateEngine.process(path, ctx, response.getWriter());
 
 	}

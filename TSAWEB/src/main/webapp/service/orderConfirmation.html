@@ -1,29 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<!-- 
+	variables needed: userIsLogged - boolean
+		user - User
+		order - Order
+ -->
+ 
+ <!-- 
+ 	display order details then allow to confirm
+ 	needs order
+  -->
 <meta charset="ISO-8859-1">
 <title>Telco homepage</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
 
-	<div align="right" th:if="${userIsLogged}">
-		<a th:href="@{/Logout}">Logout</a>
+
+	<div align="right" th:if="${user != null}">
+		<p th:text="${user.username}"/> <a th:href="@{/Logout}">Logout</a>
 	</div>
-	Recap order:
-	<br> Chosen servicePackage:
-	<p th:text="${order.servicePackage.name}" />
-	<p th:text="'Duration: ' + ${order.validityPeriod.monthDuration}" />
-	<p th:text="'Price: ' + ${order.validityPeriod.price}" />
-	Included services:
-	<p th:each="service: ${order.servicePackage.availableServices}"
-		th:text="${service.name}" />
-	Chosen optional products:
-		<p  th:each="op: ${order.chosenOptProds}" th:text="${op.name} + ' -> ' + ${op.monthlyFee} + ' euro'"/>
-	Chosen startDate:
-	<p th:text="${order.startDate}" />
-	Total value:
-	<p th:text="${order.totalvalue}" />
-	<a th:href="@{/OrderConfirmation}">Confirm</a>
+	<form action="OrderConfirmation" method="POST">
+		Recap order: <br> Chosen servicePackage:
+		<p th:text="${order.servicePackage.name}" />
+		<p th:text="'Duration: ' + ${order.validityPeriod.monthDuration}" />
+		<p th:text="'Price: ' + ${order.validityPeriod.price}" />
+		Included services:
+		<p th:each="service: ${order.servicePackage.availableServices}"
+			th:text="${service.name}" />
+		Chosen optional products:
+		<p th:each="op: ${order.chosenOptProds}"
+			th:text="${op.name} + ' -> ' + ${op.monthlyFee} + ' euro'" />
+		Chosen startDate:
+		<p th:text="${order.startDate}" />
+		Total value:
+		<p th:text="${order.totalvalue}" />
+		<div th:if="${user != null}">
+			<input type="submit" name="valid" value="Valid"> <input
+				type="submit" name="notValid" value="Not Valid"> <input
+				type="submit" name="random" value="Random">
+		</div>
+		<input type="submit" name="deleteOrder" value="Delete Order"/>
+		<input th:unless="${user != null}" type="submit" name="login" value="Login"> 
+	</form>
 </body>
 </html>

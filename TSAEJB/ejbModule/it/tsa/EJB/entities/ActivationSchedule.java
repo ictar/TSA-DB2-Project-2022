@@ -12,7 +12,8 @@ public class ActivationSchedule {
 	private Date dateOfAct;
 	private Date dateOfDeact;
 	
-	@OneToOne(mappedBy="activationSchedule")
+	@OneToOne
+	@JoinColumn(name="orderId")
 	private Order order;
 
 	public Date getDateOfAct() {
@@ -31,4 +32,7 @@ public class ActivationSchedule {
 		this.dateOfDeact = dateOfDeact;
 	}
 
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 }

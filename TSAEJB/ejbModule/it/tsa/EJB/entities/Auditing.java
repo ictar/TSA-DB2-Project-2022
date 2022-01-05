@@ -10,7 +10,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-
+@NamedQuery(name = "Auditing", query = "SELECT a From Auditing a WHERE a.user=?1")
 public class Auditing implements Serializable {
 
 	
@@ -22,8 +22,8 @@ public class Auditing implements Serializable {
 	
 	private String username;
 	private String email;
-	private int amount;
-	private Timestamp lastRejectionTIme;
+	private float amount;
+	private Timestamp lastRejectionTime;
 	
 	@ManyToOne
 	@JoinColumn(name="userID")
@@ -39,6 +39,8 @@ public class Auditing implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+		this.username = user.getUsername();
+		this.email = user.getEmail();
 	}
 	/**
 	 * @return the id
@@ -56,13 +58,6 @@ public class Auditing implements Serializable {
 	}
 
 	/**
-	 * @param username the username to set
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	/**
 	 * @return the email
 	 */
 	public String getEmail() {
@@ -70,38 +65,31 @@ public class Auditing implements Serializable {
 	}
 
 	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
 	 * @return the amount
 	 */
-	public int getAmount() {
+	public float getAmount() {
 		return amount;
 	}
 
 	/**
 	 * @param amount the amount to set
 	 */
-	public void setAmount(int amount) {
+	public void setAmount(float amount) {
 		this.amount = amount;
 	}
 
 	/**
 	 * @return the lastRejectionTIme
 	 */
-	public Timestamp getLastRejectionTIme() {
-		return lastRejectionTIme;
+	public Timestamp getLastRejectionTime() {
+		return lastRejectionTime;
 	}
 
 	/**
 	 * @param lastRejectionTIme the lastRejectionTIme to set
 	 */
-	public void setLastRejectionTIme(Timestamp lastRejectionTIme) {
-		this.lastRejectionTIme = lastRejectionTIme;
+	public void setLastRejectionTime(Timestamp lastRejectionTIme) {
+		this.lastRejectionTime = lastRejectionTIme;
 	}
 	
 	

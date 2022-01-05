@@ -1,6 +1,11 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<!-- 
+	variables needed: none
+	variables used: errorMsgLogin, registrationResult - string
+		onlyLogin - boolean
+ -->
 <meta charset="ISO-8859-1">
 <title>Album Management Home</title>
 <link rel="stylesheet" href="style.css">
@@ -17,12 +22,11 @@
 				<form action="UserLogin" method="POST">
 					Username: <input type="text" name="username" value="user1" required>
 					Password: <input type="text" name="password" value="pass" required>
-					<br> <input type="submit" value="Login">
+					<br> <input type="submit" name="login" value="Login">
 
 					<p th:text=" ${errorMsgLogin}"></p>
 				</form>
 			</td>
-
 
 			<td>
 				<form action="UserRegister" method="POST">
@@ -33,14 +37,21 @@
 					<p th:text=" ${registrationResult}"></p>
 
 				</form>
-
 			</td>
 		</tr>
 	</table>
 
-	<form action="GoToHomepage" method="POST">
+	<form action="GoToHomepage" method="POST" th:unless="${onlyLogin}">
 		Browse without logging in <input type="submit" value="Enter">
 	</form>
 
 </body>
 </html>
+
+
+<!-- 
+	pages flow: index.html -> UserLogin.java -> GoToHomepage.java
+	-> homepage.html -> BuyService.java -> buyService.html 
+	-> BuyService.java -> orderConfirmation.html -> OrderConfirmation.java
+	-> GoToHomepage.java -> homepage.html
+ -->

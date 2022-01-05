@@ -23,6 +23,8 @@ import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.OrderService;
+import it.tsa.EJB.services.UserService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -35,15 +37,12 @@ public class OrderConfirmation extends HttpServlet {
 	private ServletContext servletContext;
 	private WebContext ctx;
 
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
-
-	public OrderConfirmation() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	@EJB(name = "project.services/OrderService")
+	private OrderService orderService;
 
 	public void init() throws ServletException {
+		System.out.println("Start orderconfirm");
+
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -52,22 +51,69 @@ public class OrderConfirmation extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		Order order = (Order) request.getSession().getAttribute("order");
-
-		dbService.confirmOrder(order);
-		System.out.println("Orderconfirmed");
-		
-		
-	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
-	}
-	
-	
-	
-}
 
+		Order order = (Order) request.getSession().getAttribute("order");
+		User user = (User) request.getSession().getAttribute("user");
+		String path = servletContext.getContextPath() + "/GoToHomepage";
+
+		if (request.getParameter("deleteOrder") != null) {
+
+			request.getSession().removeAttribute("order");
+
+		} else if (request.getParameter("login") != null || user == null) {
+
+			request.getSession().setAttribute("onlyLogin", true);
+			path = servletContext.getContextPath() + "/GoToLogin";
+		} else {
+
+			// TODO better to place the check in ejb?
+			if (request.getSession().getAttribute("toFixOrder") == null) {
+				orderService.confirmOrder(order); // maybe stateful?
+
+				if (request.getParameter("valid") != null) {
+
+					// payment ok
+					orderService.addOrder(order, user, true);
+				} else if (request.getParameter("notValid") != null) {
+					// payment wrong
+					orderService.addOrder(order, user, false);
+				} else if (request.getParameter("random") != null) {
+					// generate Random
+				} else {
+					// possible
+					System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
+
+				}
+				request.getSession().removeAttribute("toFixOrder");
+			} else {
+				if (request.getParameter("valid") != null) {
+
+					// payment ok
+					orderService.fixOrder(order, user, true);
+				} else if (request.getParameter("notValid") != null) {
+					// payment wrong
+					orderService.fixOrder(order, user, false);
+				} else if (request.getParameter("random") != null) {
+					// generate Random
+				} else {
+					// possible
+					System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
+
+				}
+			}
+
+			request.getSession().setAttribute("user", user); // called to update user with new order
+			request.getSession().removeAttribute("order");
+		}
+		response.sendRedirect(path);
+
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doPost(request, response);
+	}
+
+}
