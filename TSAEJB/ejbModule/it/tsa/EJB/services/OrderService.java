@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import it.tsa.EJB.entities.OptProduct;
 import it.tsa.EJB.entities.Order;
@@ -96,4 +97,17 @@ public class OrderService {
 		order.setValidityFlag(valid);
 		order.setRejectedFlag(!valid);
 	}
+  
+  public List<Order> getAllSuspendedOrders() {
+		List<Order> oList;
+		
+		try {
+			oList = em.createNamedQuery("Order.getSuspended", Order.class)
+					.getResultList();
+		} catch (PersistenceException e) {
+			return null;
+		}
+		
+		return oList;
+  }
 }

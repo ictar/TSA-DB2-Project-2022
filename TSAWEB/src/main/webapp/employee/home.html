@@ -88,7 +88,7 @@
 		         <br><br>
 		         <p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
 	         </div>
-	         <br><br>
+	         <br>
 	         
 	          <!-- associated service -->
 	          <label>Services: </label><br>
@@ -102,10 +102,10 @@
 		         <br><br>
 		         <p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
 	         </div>
-	         <br><br>
+	         <br>
 	         
 	         
-	           <!-- TODO: associated products -->
+	           <!-- associated products -->
 	           <label>Products (Optional): </label><br>
 	         <div th:if="${productSet == null || productSet.isEmpty()}">
 	         	<span>No available product. Create one above!</span>
@@ -117,8 +117,6 @@
 		         <br><br>
 		         <p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
 	         </div>
-	         <br><br>
-	         
 	           
 	        <input type="submit" value="Submit">
 	        <p th:text=" ${cspErrMsg}"></p>

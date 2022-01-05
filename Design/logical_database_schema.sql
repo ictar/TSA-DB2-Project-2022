@@ -31,7 +31,8 @@ CREATE TABLE `optProduct` (
     `name` varchar(45) NOT NULL,
     `monthlyFee` decimal(9,2) NOT NULL,
 
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `prodname_UNIQUE` (`name`)
 );
 
 CREATE TABLE `employee` (
@@ -43,23 +44,23 @@ CREATE TABLE `employee` (
     PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `servicePkg` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(45) NOT NULL,
+
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `spname_UNIQUE` (`name`)
+);
+
 CREATE TABLE `validityPeriod` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `monthDuration` int(11) NOT NULL,
     `price` decimal(9,2)  NOT NULL,
-
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `servicePkg` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(45) NOT NULL,
-    `validityPeriodId` int(11) NOT NULL,
+    `servicePkgId` int(11),
 
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_servicePkg_validityPeriodId` FOREIGN KEY (`validityPeriodId`) REFERENCES `validityPeriod`(`id`)
+    CONSTRAINT `fk_validityPeriod_servicePkgId` FOREIGN KEY (`servicePkgId`) REFERENCES `servicePkg`(`id`)
 );
-
 
 CREATE TABLE `service` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -71,21 +72,14 @@ CREATE TABLE `service` (
     `extraSMSFee` decimal(9,2),
     `extraGBFee` decimal(9,2),
 
-    PRIMARY KEY (`id`)
+
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `srvname_UNIQUE` (`name`)
 );
 
-CREATE TABLE `activationSchedule` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `dateOfActivation` date NOT NULL,
-    `dateOfDeactivation` date NOT NULL,
-
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `order` (
+CREATE TABLE `orders` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
 
-    `activationScheduleId` int(11),
     `userId` int(11),
     `servicePkgId` int(11),
 
@@ -103,9 +97,18 @@ CREATE TABLE `order` (
     PRIMARY KEY (`id`),
     -- foreign key
     CONSTRAINT `fk_order_userid` FOREIGN KEY (`userId`) REFERENCES `user`(`id`),
-    CONSTRAINT `fk_order_activationScheduleId` FOREIGN KEY (`activationScheduleId`) REFERENCES `activationSchedule`(`id`),
     CONSTRAINT `fk_order_servicePkgId` FOREIGN KEY (`servicePkgId`) REFERENCES `servicePkg`(`id`),
     CONSTRAINT `fk_order_validityPeriodId` FOREIGN KEY (`validityPeriodId`) REFERENCES `validityPeriod`(`id`)
+);
+
+CREATE TABLE `activationSchedule` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `dateOfActivation` date NOT NULL,
+    `dateOfDeactivation` date NOT NULL,
+    `orderId` int(11) NOT NULL,
+
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_activationSchedule_orderId` FOREIGN KEY (`orderId`) REFERENCES `orders`(`id`)
 );
 
 -- relationships
@@ -132,7 +135,7 @@ CREATE TABLE `chosenOptProd` (
     `optProdId` INT(11) NOT NULL,
     PRIMARY KEY (`orderId` , `optProdId`),
     CONSTRAINT `fk_chosenOptProd_servicePkgId` FOREIGN KEY (`orderId`)
-        REFERENCES `order` (`id`),
+        REFERENCES `orders` (`id`),
     CONSTRAINT `fk_chosenOptProd_optProdId` FOREIGN KEY (`optProdId`)
         REFERENCES `optProduct` (`id`)
 );

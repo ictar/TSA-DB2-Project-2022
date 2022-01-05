@@ -40,6 +40,15 @@ public class ValidityPeriod {
 	public void setPrice(float price) {
 		this.price = price;
 	}
+	
+
+	public ServicePackage getServicePackage() {
+		return servicePackage;
+	}
+
+	public void setServicePackage(ServicePackage servicePackage) {
+		this.servicePackage = servicePackage;
+	}
 
 	@Override
 	public String toString() {

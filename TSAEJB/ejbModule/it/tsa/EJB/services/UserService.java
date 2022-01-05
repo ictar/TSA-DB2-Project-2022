@@ -62,4 +62,17 @@ public class UserService {
 		user.decreaseFailedPayments();
 		em.merge(user);
 	}
+  
+  public List<User> getInsolventUsers() {
+		List<User> uList;
+		
+		try {
+			uList = em.createNamedQuery("User.getInsolvents", User.class)
+					.getResultList();
+		} catch (PersistenceException e) {
+			return null;
+		}
+		
+		return uList;
+	}
 }

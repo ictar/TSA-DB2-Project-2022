@@ -108,7 +108,7 @@ public class EmployeeHomeServlet extends HttpServlet {
 		try {
 			services = srvService.findAllService();
 			prods = prodService.findAllProducts();
-			vps = vpService.findAllValidityPeriods();
+			vps = vpService.findAllUnusedValidityPeriods();
 		} catch (Exception e){
 			ctx.setVariable("cspErrMsg", e.getMessage());
 			tmplEngine.process(path, ctx, response.getWriter());
