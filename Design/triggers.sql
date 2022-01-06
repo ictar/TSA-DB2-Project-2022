@@ -1,29 +1,26 @@
 -- views
 drop table if exists ServicePkgPurchase;
 create table ServicePkgPurchase as
-    select o.servicePkgId as spid, o.validityPeriodId as vpid, count(o.id) as ordercnt, count(p.optProdId) as prodcnt 
+    select o.servicePkgId as spid, o.validityPeriodId as vpid, count(distinct o.id) as ordercnt, count(p.optProdId) as prodcnt 
     from orders o 
-    join chosenOptProd p on o.id = p.orderId
+    left join chosenOptProd p on o.id = p.orderId
     where o.validityFlag = 1
     group by o.servicePkgId, o.validityPeriodId;
 
 drop table if exists ServicePkgSaleWithProd;
 create table ServicePkgSaleWithProd as
     select o.servicePkgId as spid, sum(o.totalValue) as valSale
-    from orders o
-    join chosenOptProd p on o.id = p.orderId
-    where o.validityFlag = 1 
-    group by o.servicePkgId
-    having count(p.optProdId) > 0;
+	from orders o
+    where o.validityFlag = 1 and o.id in (select distinct(orderId) from chosenOptProd)
+    group by o.servicePkgId;
 
 drop table if exists ServicePkgSaleNoProd;
 create table ServicePkgSaleNoProd as
-    select o.servicePkgId as spid, sum(o.totalValue) as valSale
-    from orders o
-    join chosenOptProd p on o.id = p.orderId
-    where o.validityFlag = 1 
-    group by o.servicePkgId
-    having count(p.optProdId) = 0;
+    select o.servicePkgId as spid, sum(distinct o.totalValue) as valSale
+	from orders o
+	left join chosenOptProd p on o.id = p.orderId
+    where o.validityFlag = 1 and p.optProdId is null
+    group by o.servicePkgId;
 
 drop table if exists prodSale;
 create table prodSale as
