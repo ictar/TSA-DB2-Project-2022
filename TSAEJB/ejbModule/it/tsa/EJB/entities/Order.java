@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "orders")
-@NamedQuery(name = "Order.getSuspended", query = "SELECT o From Order o WHERE o.rejectedFlag = 1")
+@NamedQuery(name = "Order.getSuspended", query = "SELECT o From Order o WHERE o.rejectedFlag = true")
 @NamedQuery(name = "Order.getUserOrders", query = "SELECT o FROM Order o WHERE o.user=?1")
 public class Order {
 	
