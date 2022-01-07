@@ -1,34 +1,29 @@
-DROP TRIGGER IF EXISTS after_order_valid;
-
 -- views
-drop view if exists ServicePkgPurchase;
-create view ServicePkgPurchase as
-    select o.servicePkgId as spid, o.validityPeriodId as vpid, count(o.id) as ordercnt, count(p.optProdId) as prodcnt 
+drop table if exists ServicePkgPurchase;
+create table ServicePkgPurchase as
+    select o.servicePkgId as spid, o.validityPeriodId as vpid, count(distinct o.id) as ordercnt, count(p.optProdId) as prodcnt 
     from orders o 
-    join chosenOptProd p on o.id = p.orderId
+    left join chosenOptProd p on o.id = p.orderId
     where o.validityFlag = 1
     group by o.servicePkgId, o.validityPeriodId;
 
-drop view if exists ServicePkgSaleWithProd;
-create view ServicePkgSaleWithProd as
+drop table if exists ServicePkgSaleWithProd;
+create table ServicePkgSaleWithProd as
     select o.servicePkgId as spid, sum(o.totalValue) as valSale
-    from orders o
-    join chosenOptProd p on o.id = p.orderId
-    where o.validityFlag = 1 
-    group by o.servicePkgId
-    having count(p.optProdId) > 0;
+	from orders o
+    where o.validityFlag = 1 and o.id in (select distinct(orderId) from chosenOptProd)
+    group by o.servicePkgId;
 
-drop view if exists ServicePkgSaleNoProd;
-create view ServicePkgSaleNoProd as
-    select o.servicePkgId as spid, sum(o.totalValue) as valSale
-    from orders o
-    join chosenOptProd p on o.id = p.orderId
-    where o.validityFlag = 1 
-    group by o.servicePkgId
-    having count(p.optProdId) = 0;
+drop table if exists ServicePkgSaleNoProd;
+create table ServicePkgSaleNoProd as
+    select o.servicePkgId as spid, sum(distinct o.totalValue) as valSale
+	from orders o
+	left join chosenOptProd p on o.id = p.orderId
+    where o.validityFlag = 1 and p.optProdId is null
+    group by o.servicePkgId;
 
-drop view if exists prodSale;
-create view prodSale as
+drop table if exists prodSale;
+create table prodSale as
     select optProdId as pid, count(orderId) as saleCnt 
     from chosenOptProd p
     join orders o on o.id = p.orderId
@@ -36,43 +31,57 @@ create view prodSale as
     group by optProdId;
     
 -- trigger
+DROP TRIGGER IF EXISTS after_order_valid;
+
 DELIMITER //
 CREATE TRIGGER after_order_valid
 AFTER UPDATE ON orders
 FOR EACH ROW
 BEGIN
-	DECLARE prodCnt INT;
-    SET prodCnt := (select count(optProdId) from chosenOptProd where orderId=new.id);
+	DECLARE prodCount INT;
+    SELECT count(optProdId) INTO prodCount FROM chosenOptProd WHERE orderId=new.id;
     
-	IF (new.validityFlag <> old.validityFlag and new.validityFlag = 1) THEN
+	IF (new.validityFlag != old.validityFlag and new.validityFlag = 1) THEN
 		IF (exists
 			(select * from ServicePkgPurchase where spid=new.servicePkgId and vpid=new.validityPeriodId)) THEN
-			update ServicePkgPurchase set ordercnt = ordercnt + 1 and prodcnt = prodcnt +prodCnt where spid=new.servicePkgId and vpid=new.validityPeriodId;
+			update ServicePkgPurchase
+            set ordercnt=ordercnt+1, prodcnt=prodcnt+prodCount
+            where spid=new.servicePkgId and vpid=new.validityPeriodId;
 		ELSE
-			insert into ServicePkgPurchase values (new.servicePkgId, new.validityPeriodId, 1, prodCnt);
+			insert into ServicePkgPurchase (spid, vpid, ordercnt, prodcnt)
+            values (new.servicePkgId, new.validityPeriodId, 1, prodCount);
 		END IF;
 
-		IF (prodCnt > 0) THEN -- update total value of sales per package with products
+		IF (prodCount > 0) THEN -- update total value of sales per package with products
 			IF (exists
 				(select * from ServicePkgSaleWithProd where spid=new.servicePkgId)) THEN
-				update ServicePkgSaleWithProd set valSale = valSale + new.totalValue where spid=new.servicePkgId;
+				update ServicePkgSaleWithProd
+                set valSale = valSale + new.totalValue
+                where spid=new.servicePkgId;
 			ELSE -- no exist
-				insert into ServicePkgSaleWithProd values (new.servicePkgId, new.totalValue);
+				insert into ServicePkgSaleWithProd (spid, valSale)
+                values (new.servicePkgId, new.totalValue);
 			END IF;
 		ELSE -- update total value of sales per package without products
 			IF (exists
 				(select * from ServicePkgSaleNoProd where spid=new.servicePkgId)) THEN
-				update ServicePkgSaleNoProd set valSale = valSale + new.totalValue where spid=new.servicePkgId;
+				update ServicePkgSaleNoProd
+                set valSale = valSale + new.totalValue
+                where spid=new.servicePkgId;
 			ELSE -- no exist
-				insert into ServicePkgSaleNoProd values (new.servicePkgId, new.totalValue);
+				insert into ServicePkgSaleNoProd (spid, valSale)
+                values (new.servicePkgId, new.totalValue);
 			END IF;
 		END IF;
 
 		IF (exists
 			(select * from prodSale where pid in (select optProdId from chosenOptProd where orderId=new.id))) THEN
-			update prodSale set saleCnt = saleCnt + 1 where pid in (select optProdId from chosenOptProd where orderId=new.id);
+			update prodSale
+            set saleCnt = saleCnt + 1
+            where pid in (select optProdId from chosenOptProd where orderId=new.id);
 		ELSE
-			insert into prodSale (pid, saleCnt) select optProdId, 1 from chosenOptProd;
+			insert into prodSale (pid, saleCnt)
+            select optProdId, 1 from chosenOptProd where orderId=new.id;
 		END IF;
 	END IF;
     

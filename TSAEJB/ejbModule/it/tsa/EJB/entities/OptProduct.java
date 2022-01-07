@@ -29,13 +29,8 @@ public class OptProduct implements Serializable {
 	// relationships
 
 	// optProd -> servicePackage
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable(
-			name="optprodinpkg",
-			joinColumns={@JoinColumn(name="optProdId")},
-			inverseJoinColumns={@JoinColumn(name="servicePkgId")}
-			)
-	private List<ServicePackage> servicePkgs;
+	@ManyToMany(mappedBy="availableOptProds", fetch=FetchType.LAZY)
+	private Set<ServicePackage> servicePkgs;
 	
 	// optProduct -> Order
 	@ManyToMany(mappedBy="chosenOptProds", fetch=FetchType.LAZY)
@@ -83,7 +78,7 @@ public class OptProduct implements Serializable {
 	/**
 	 * @return the servicePkgs
 	 */
-	public List<ServicePackage> getServicePkgs() {
+	public Set<ServicePackage> getServicePkgs() {
 		return servicePkgs;
 	}
 
