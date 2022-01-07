@@ -1,6 +1,7 @@
 package it.tsa.WEB.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -50,11 +51,19 @@ public class GoToHomepage extends HttpServlet {
 
 		User loggedUser = (User) request.getSession().getAttribute("user");
 
+
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
 		if (loggedUser != null) {
-			List<Order> rejectedOrders = loggedUser.getOrders().stream().filter(order -> order.isRejectedFlag())
-					.toList();
+			//copied to avoid using user.getOrders().get(i) everytime
+			List<Order> allOrders = new ArrayList<Order>(loggedUser.getOrders());
+			List<Order> rejectedOrders = new ArrayList<Order>();
+			
+			for(int i=0;i<allOrders.size();i++) {
+				if (allOrders.get(i).isRejectedFlag())
+					rejectedOrders.add(allOrders.get(i));
+			}
+
 			ctx.setVariable("rejectedOrders", rejectedOrders);
 		}
 
@@ -70,3 +79,6 @@ public class GoToHomepage extends HttpServlet {
 	}
 
 }
+
+//rejectedOrders = loggedUser.getOrders().stream().filter(order -> order.isRejectedFlag())			
+//.toList();

@@ -132,16 +132,13 @@ public class User implements Serializable {
 	
 	public void decreaseFailedPayments() {
 		boolean hasRejectedOrder = false;
-		if (numFailedPayments>0)
-			numFailedPayments--;
+		
+		numFailedPayments =0;
 		for(int i = 0; i<orders.size(); i++) {
 			if (orders.get(i).isRejectedFlag())
 				hasRejectedOrder = true;
 		}
 
-		if (!hasRejectedOrder) {
-			numFailedPayments = 0;
-			insolventFlag = false;
-		}
+		insolventFlag = hasRejectedOrder;
 	}
 }
