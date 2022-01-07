@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
@@ -23,7 +22,7 @@ public class EmployeeService {
 	}
 	
 	
-	public Employee checkCredentials(String username, String password) throws   CredentialsException, NonUniqueResultException {
+	public Employee checkCredentials(String username, String password) throws   CredentialsException {
 		List<Employee> eList;
 		
 		try {
@@ -41,6 +40,6 @@ public class EmployeeService {
 			return eList.get(0);
 		}
 		
-		throw new NonUniqueResultException("More than one employee registered with same credentials.");
+		throw new CredentialsException("More than one employee registered with same credentials.");
 	}
 }

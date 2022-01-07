@@ -3,6 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>Sales Report</title>
+<style>
+        table,table tr th, table tr td { border:1px solid #0094ff; }
+        table {
+        	width: 200px;
+        	min-height: 25px;
+        	line-height: 25px;
+        	text-align: center;
+        	border-collapse: collapse;
+        }   
+</style>
 </head>
 <body>
 
@@ -108,15 +118,15 @@
 <div th:if="${!(suspOrderList == null || suspOrderList.isEmpty())}">
 	<table>
 		<tr>
-			<th>Order Id</th><th>User Id</th><th>Service Package Id</th><th>Creation Date</th><th>Creation Hour</th><th>Total Value</th>
+			<th>Order Id</th><th>User</th><th>Service Package</th><th>Creation Date</th><th>Creation Hour</th><th>Total Value</th>
 		</tr>
 		<tr th:each="so: ${suspOrderList}">
 			<td th:text="${so.getId()}"></td>
-			<td th:text="${so.getUserId()}"></td>
-			<td th:text="${so.getServicePkgId()}"></td>
+			<td th:text="${so.getUser().toString()}"></td>
+			<td th:text="${so.getServicePackage()}"></td>
 			<td th:text="${so.getDateOfCreation()}"></td>
 			<td th:text="${so.getHourOfCreation()}"></td>
-			<td th:text="${so.getTotalValue()}"></td>
+			<td th:text="${so.getTotalvalue()}"></td>
 	</table>
 	<p th:text=" ${soErrMsg}"></p>
 </div>
@@ -145,11 +155,11 @@
 <hr />
 
 <h3>Best seller optional product</h3>
-<div th:if="${bestOptProd != null}">
+<div th:if="${bestOptProd == null}">
 	<p> No Data</p>
 </div>
 <div th:if="${bestOptProd != null}">
-	<p th:text="${bestOptPro.getName()}"></p>
+	<p th:text="${bestOptProd[0]}"></p>
 </div>
 <p th:text=" ${bspErrMsg}"></p>
 

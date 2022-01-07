@@ -27,7 +27,14 @@ public class ServicePackage {
 	 */
 	private Set<Service> availableServices;
 
-	@ManyToMany(mappedBy="servicePkgs", fetch=FetchType.EAGER)
+	
+	//@ManyToMany(mappedBy="servicePkgs", fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.EAGER)
+	@JoinTable(
+			name="optprodinpkg",
+			joinColumns={@JoinColumn(name="servicePkgId")},
+			inverseJoinColumns={@JoinColumn(name="optProdId")}
+			)
 	private Set<OptProduct> availableOptProds;
 
 	@OneToMany(mappedBy = "servicePackage")
@@ -81,22 +88,6 @@ public class ServicePackage {
 	public Set<ValidityPeriod> getValidityPeriods(){
 		return validityPeriods;
 	}
-
-	public Set<Service> getAvailableServices() {
-		return availableServices;
-	}
-
-	public void setAvailableServices(Set<Service> availableServices) {
-		this.availableServices = availableServices;
-	}
-
-	public void setValidityPeriods(Set<ValidityPeriod> validityPeriods) {
-		this.validityPeriods = validityPeriods;
-	}
-
-	public void setAvailableOptProds(Set<OptProduct> availableOptProds) {
-		this.availableOptProds = availableOptProds;
-	}
 	
 	public void addValidityPeriod(ValidityPeriod vp) {
 		if(validityPeriods == null) {
@@ -106,4 +97,7 @@ public class ServicePackage {
 		vp.setServicePackage(this);
 	}
 	
+	public String toString() {
+		return "ServicePackage id: " + getId() + " name: " + getName();
+	}
 }	

@@ -54,7 +54,7 @@ public class OrderService {
 		newOrder.setHourOfCreation(date.getHours());
 		newOrder.setRejectedFlag(false);
 		newOrder.setTotalvalue(newOrder.computeTotalCost());
-		newOrder.setValidityFlag(true);
+		newOrder.setValidityFlag(false);
 		newOrder.setStartDate(startDate);
 
 		//dont add order to user because this creates only Order instance
