@@ -22,18 +22,40 @@ public class Order {
 	private boolean validityFlag;
 	private boolean rejectedFlag;
 	
-	@ManyToOne
+	/*
+	 * fetch Eager because it is a simple data and can be easily retrieved.
+	 * Don't cascade because we don't want that modifications made on Order to affect 
+	 * ValidityPeriod
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "validityPeriodId")
 	private ValidityPeriod validityPeriod;
 	
-	@ManyToOne
+	/*
+	 * Fetch Eager because the application focuses on User's orders,
+	 * so it can be useful to have them both retrieved together
+	 * Don't cascade because User and Order modifications must be separate
+	 */
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "userId")
 	private User user;
 	
-	@ManyToOne
+	/*
+	 * Fetch Lazy because we don't always need to know what ServicePackage is
+	 * in Order
+	 * Don't cascade because we don't want to allow ServicePackage modification
+	 * from Order
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="servicePkgId")
 	private ServicePackage servicePackage;
 	
+	/*
+	 * Fetch Lazy because we don't always need to know what OptProduct is
+	 * in Order
+	 * Don't cascade because we don't want to allow OptProduct5 modification
+	 * from Order
+	 */
 	@ManyToMany
 	@JoinTable(
 			name = "chosenOptProd",

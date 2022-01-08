@@ -12,7 +12,13 @@ public class ActivationSchedule {
 	private Date dateOfAct;
 	private Date dateOfDeact;
 	
-	@OneToOne
+	/*
+	 * don't cascade because activationSchedule can be deleted
+	 * without having to delete the order, other operations must be performed
+	 * directly on Order.
+	 * Eager because it is useful to have immediately, it is not very heavy (?)
+	 */
+	@OneToOne(fetch= FetchType.EAGER)
 	@JoinColumn(name="orderId")
 	private Order order;
 

@@ -98,7 +98,7 @@ FOR EACH ROW BEGIN
 
 	insert into telcoservicedb.auditing (userId, username, email, amount, lastRejectionTime) values (new.id, new.username, new.email, totalAmount, currentTime);
 	END IF;
-END
+END;
 
 
 

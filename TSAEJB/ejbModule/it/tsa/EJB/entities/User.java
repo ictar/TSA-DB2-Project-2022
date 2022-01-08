@@ -34,13 +34,23 @@ public class User implements Serializable {
 
 	// relationships
 	// user -> order
+	/*
+	 * Eager because Order is what the app cares about.
+	 * Cascade merge because from User we want to be able to modify orders,
+	 * delete because deleting user must delete also related orders
+	 */
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="user",
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+			cascade = {CascadeType.MERGE, CascadeType.REMOVE})
 	private List<Order> orders;
 	
 	
 	// user -> auditing
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "user")
+	/*
+	 * Lazy because not always required.
+	 * When we delete User we want to delete also related info in Auditing table
+	 */
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "user",
+			cascade = CascadeType.REMOVE)
 	private List<Auditing> audits;
 	
 	public User() {
