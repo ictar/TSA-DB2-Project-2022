@@ -7,8 +7,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ServicePkg")
-@NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp")
-@NamedQuery(name = "ServicePackage.findOne", query = "SELECT sp FROM ServicePackage sp WHERE sp.id=?1")
+@NamedQueries({ 
+		@NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp"),
+		@NamedQuery(name = "ServicePackage.findOne", query = "SELECT sp FROM ServicePackage sp WHERE sp.id=?1")
+})
 public class ServicePackage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,16 +21,16 @@ public class ServicePackage {
 	private Set<ValidityPeriod> validityPeriods;
 
 	/*
-	 * don't cascade because services can be associated to multiple service packages,
-	 * any modification must be done to services directly
+	 * don't cascade because services can be associated to multiple service
+	 * packages, any modification must be done to services directly
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "servicesInPkg", joinColumns = @JoinColumn(name = "servicePkgId"), inverseJoinColumns = @JoinColumn(name = "serviceId"))
 	private Set<Service> availableServices;
 
 	/*
-	 * don't cascade because optProds can be associated to multiple service packages,
-	 * any modification must be done to optProd directly
+	 * don't cascade because optProds can be associated to multiple service
+	 * packages, any modification must be done to optProd directly
 	 */
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "optprodinpkg", joinColumns = { @JoinColumn(name = "servicePkgId") }, inverseJoinColumns = {
@@ -36,12 +38,10 @@ public class ServicePackage {
 	private Set<OptProduct> availableOptProds;
 
 	/*
-	 * cascade only Remove because the order doesn't make anymore sense
-	 * without ServicePackage.
-	 * Lazy because not often (never) used
+	 * cascade only Remove because the order doesn't make anymore sense without
+	 * ServicePackage. Lazy because not often (never) used
 	 */
-	@OneToMany(mappedBy = "servicePackage", cascade = CascadeType.REMOVE,
-			fetch= FetchType.LAZY)
+	@OneToMany(mappedBy = "servicePackage", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	private Set<Order> orders;
 
 	public int getId() {

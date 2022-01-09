@@ -20,7 +20,7 @@ public class UserService {
 	public User checkCredentials(String usrn, String pwd) throws LoginErrorException {
 		List<User> uList = null;
 		try {
-			uList = em.createNamedQuery("checkCredentials", User.class).setParameter(1, usrn).setParameter(2, pwd)
+			uList = em.createNamedQuery("User.checkCredentials", User.class).setParameter(1, usrn).setParameter(2, pwd)
 					.getResultList();
 
 		} catch (PersistenceException e) {

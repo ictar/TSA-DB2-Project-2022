@@ -7,31 +7,54 @@
 		user - User
 		servicePackages - List<ServicePackage>
  -->
- 
+
 <meta charset="ISO-8859-1">
-<title>Select package</title>
-<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Order composition</title>
 <script>
-	// Look for a link in the row and click on it
-	function selectServicePackage(row) {
-		row.querySelector("a").click();
+
+	window.onload = function(e) {
+		let today = new Date();
+		//24*60*60*1000 = milliseconds in one day
+		let tomorrow = new Date(today.getTime() + 24*60*60*1000);
+		document.getElementById('startDate').valueAsDate = tomorrow;
 	}
 </script>
+<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
 
-	<div align="right" th:if="${user != null}">
-		<p th:text="${user.username}" /> <a th:href="@{/Logout}">Logout</a>
+	<div class="loginDiv" th:if="${user != null}">
+		<p th:text="${user.username}" />
+		<a th:href="@{/Logout}">Logout</a>
 	</div>
 
 
+	<h1 th:text="${error}"></h1>
 	<form th:action="@{/BuyService}" method="POST">
 		<table>
-			<th></th>
-			<th>Service Package</th>
-			<th>Service</th>
-			<th>Validity Periods</th>
-			<th>Optional Products</th>
+			<tr>
+				<th></th>
+				<th>Service Package</th>
+				<th>Service</th>
+				<th>Validity Periods
+					<table>
+						<tr>
+							<td>o</td>
+							<td>Months</td>
+							<td>Price</td>
+						</tr>
+					</table>
+				</th>
+				<th>Optional Products
+					<table>
+						<tr>
+							<td>o</td>
+							<td>Name</td>
+							<td>Price</td>
+						</tr>
+					</table>
+				</th>
+			</tr>
 			<tr th:each="srvPkg : ${servicePackages}">
 				<td><input type="radio" th:value="${srvPkg.id}"
 					name="servicePackageId" /></td>
@@ -43,7 +66,7 @@
 						th:text="${service.name}" />
 				</td>
 				<td>
-					<table>
+					<table class="innerTable">
 						<tr th:each="vp : ${srvPkg.validityPeriods}">
 							<td><input type="radio"
 								th:value="${srvPkg.id} + ',' + ${vp.id}" name="validityPeriodId" /></td>
@@ -57,7 +80,7 @@
 					</table>
 				</td>
 				<td>
-					<table>
+					<table class="innerTable">
 						<tr th:each="op : ${srvPkg.availableOptProds}">
 							<td><input type="checkbox"
 								th:value="${srvPkg.id} + ',' + ${op.id}"
@@ -73,7 +96,8 @@
 				</td>
 			</tr>
 		</table>
-		<input type="date" name="startDate" value="2022-01-01" /> <input
+		<br> Select desired start date: <input type="date"
+			name="startDate" id="startDate" value="2022-01-01" /> <br> <input
 			type="submit" name="confirmButton" value="Confirm" />
 	</form>
 </body>

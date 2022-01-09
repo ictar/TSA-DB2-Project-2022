@@ -53,7 +53,7 @@ public class RejectedOrder extends HttpServlet {
 			throws ServletException, IOException {
 		String path = "/service/orderConfirmation.html";
 		int orderId = Integer.parseInt(request.getParameter("toFixOrderId"));
-		request.getSession().setAttribute("toFixOrder", orderId);
+		servletContext.setAttribute("toFixOrder", orderId);
 		User currentUser = (User) request.getSession().getAttribute("user");
 		List<Order> orders = currentUser.getOrders().stream().filter(order -> order.getId() == orderId).toList();
 		

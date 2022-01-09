@@ -41,8 +41,6 @@ public class OrderConfirmation extends HttpServlet {
 	private OrderService orderService;
 
 	public void init() throws ServletException {
-		System.out.println("Start orderconfirm");
-
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -68,7 +66,10 @@ public class OrderConfirmation extends HttpServlet {
 			path = servletContext.getContextPath() + "/GoToLogin";
 		} else {
 
-			// TODO better to place the check in ejb?
+			/* 
+			 * did not place "toFixOrder" in servletContext because it is shared with
+			 * all sessions, so I use session
+			 */		
 			if (request.getSession().getAttribute("toFixOrder") == null) {
 				orderService.confirmOrder(order); // maybe stateful?
 
@@ -80,6 +81,8 @@ public class OrderConfirmation extends HttpServlet {
 					// payment wrong
 					orderService.addOrder(order, user, false);
 				} else if (request.getParameter("random") != null) {
+
+
 					// generate Random
 				} else {
 					// possible

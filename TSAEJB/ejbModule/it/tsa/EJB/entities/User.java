@@ -112,7 +112,6 @@ public class User implements Serializable {
 	}
 	
 	public int failedPayment() {
-		//need to place if(nfp<3)?
 		insolventFlag = true;
 		numFailedPayments++;
 		return numFailedPayments;

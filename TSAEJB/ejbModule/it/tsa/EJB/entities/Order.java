@@ -1,6 +1,8 @@
 package it.tsa.EJB.entities;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -8,17 +10,20 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "orders")
-@NamedQuery(name = "Order.getSuspended", query = "SELECT o From Order o WHERE o.rejectedFlag = true")
+@NamedQueries ({
+@NamedQuery(name = "Order.getSuspended", query = "SELECT o From Order o WHERE o.rejectedFlag = true"),
 @NamedQuery(name = "Order.getUserOrders", query = "SELECT o FROM Order o WHERE o.user=?1")
+})
 public class Order {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	private float totalValue;
+	private LocalDate startDate;
+	private LocalDate dateOfCreation;
 	private int hourOfCreation;
-	private float totalvalue;
-	private Date startDate;
 	private boolean validityFlag;
 	private boolean rejectedFlag;
 	
@@ -64,7 +69,6 @@ public class Order {
 	)
 	private Set<OptProduct> chosenOptProds;
 		
-	private Date dateOfCreation;
 	public int getId() {
 		return id;
 	}
@@ -93,11 +97,11 @@ public class Order {
 		this.chosenOptProds = chosenOptProds;
 	}
 
-	public Date getDateOfCreation() {
+	public LocalDate getDateOfCreation() {
 		return dateOfCreation;
 	}
 
-	public void setDateOfCreation(Date dateOfCreation) {
+	public void setDateOfCreation(LocalDate dateOfCreation) {
 		this.dateOfCreation = dateOfCreation;
 	}
 
@@ -110,18 +114,14 @@ public class Order {
 	}
 
 	public float getTotalvalue() {
-		return totalvalue;
+		return totalValue;
 	}
 
-	public void setTotalvalue(float totalvalue) {
-		this.totalvalue = totalvalue;
-	}
-
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
@@ -149,18 +149,12 @@ public class Order {
 		this.user = user;
 		}
 	
-	public float computeTotalCost() {
+	public float computeTotalValue() {
 
-		float totalCost = validityPeriod.getPrice();
-//		System.out.println("PRICE: ValPer " + totalCost);
-		/*chosenOptProds.stream().forEach(op -> {
-			System.out.println("PRICE: Single optProd" + op.getMonthlyFee());
-		});
-	*/	totalCost = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalCost,
+		totalValue = validityPeriod.getPrice();
+		totalValue = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalValue,
 				(a, b) -> a + b);
-//		System.out.println("PRICE: singleMonth " + totalCost);
-		totalCost *= validityPeriod.getMonthDuration();
-//		System.out.println("PRICE: total " + totalCost);
-		return totalCost;
+		totalValue *= validityPeriod.getMonthDuration();
+		return totalValue;
 	}
 }

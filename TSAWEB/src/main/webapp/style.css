@@ -1,4 +1,33 @@
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
+:root{
+	--baseColor: #0094ff;
+}
+
+table, table tr th, table tr td {
+	border: 1px solid var(--baseColor);
+	padding: 5px;
+}
+
+table {
+	width: 200px;
+	min-height: 25px;
+	line-height: 25px;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+table.innerTable, .innerTable td {
+	border: none;
+}
+
+.innerTable tr:nth-child(n+2) {
+	border-top: 1px solid var(--baseColor);
+}
+
+.loginDiv {
+	float: right;	
+	margin-right: 20px;
+}
+
+.loginDiv p {
+	margin-top: 0px;
 }

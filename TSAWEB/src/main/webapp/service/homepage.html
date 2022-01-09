@@ -6,32 +6,52 @@
 		user - User
 		rejectedOrders - List<Order>
  -->
- 
- <!-- 
+
+<!-- 
  	file sections:
  	- buy service
  	- rejected order if user is insolvent, needs rejected orders
   -->
 <meta charset="ISO-8859-1">
 <title>Telco homepage</title>
-<link rel="stylesheet" type="text/css" href="../style.css" />
+<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
 
-	<div align="right" th:if="${user != null}">
+	<div class="loginDiv" th:if="${user != null}">
 		<p th:text="${user.username}" />
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
 
 	<div>
 		What you can do: <a th:href="@{/BuyService}">Buy Service</a><br>
-		<form th:action="@{/RejectedOrder}" method="POST"  th:if="${user.insolventFlag}">
+		<form th:action="@{/RejectedOrder}" method="POST"
+			th:if="${user.insolventFlag}">
 			<div>
 				Rejected orders:
 				<table>
+					<tr>
+						<th></th>
+						<th>Service package name</th>
+						<th>Services</th>
+						<th>Optional products</th>
+						<th>Validity period</th>
+						<th>Monthly fee</th>
+						<th>Total cost</th>
+					</tr>
 					<tr th:each="ro : ${rejectedOrders}">
-						<td><input type="radio" th:value="${ro.id}" name="toFixOrderId"/></td>
-						<td><p th:text="${ro.id}" /></td>
+						<td><input type="radio" th:value="${ro.id}"
+							name="toFixOrderId" /></td>
+						<td><p th:text="${ro.servicePackage.name}" /></td>
+						<td>
+							<p th:each="service: ${ro.servicePackage.availableServices}"
+								th:text="${service.name}" />
+						</td>
+						<td><p th:each="optProd: ${ro.chosenOptProds}"
+								th:text="${optProd.name}" /></td>
+						<td><p th:text="${ro.validityPeriod.monthDuration}" /></td>
+						<td><p th:text="${ro.validityPeriod.price}" /></td>
+						<td><p th:text="${ro.totalValue}" /></td>
 					</tr>
 				</table>
 				<input type="submit" value="Fix" />
