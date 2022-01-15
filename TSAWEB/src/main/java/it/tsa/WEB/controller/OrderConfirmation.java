@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
@@ -28,6 +29,8 @@ public class OrderConfirmation extends HttpServlet {
 	private TemplateEngine templateEngine;
 	private ServletContext servletContext;
 
+	private boolean errorConfirmingOrder = false;
+
 	@EJB(name = "project.services/OrderService")
 	private OrderService orderService;
 
@@ -43,6 +46,8 @@ public class OrderConfirmation extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+
+		errorConfirmingOrder = false;
 		Order order = (Order) request.getSession().getAttribute("order");
 		User user = (User) request.getSession().getAttribute("user");
 		String path = servletContext.getContextPath() + "/GoToHomepage";
@@ -57,52 +62,66 @@ public class OrderConfirmation extends HttpServlet {
 			path = servletContext.getContextPath() + "/GoToLogin";
 		} else {
 
-			/* 
-			 * did not place "toFixOrder" in servletContext because it is shared with
-			 * all sessions, so I use session
-			 */		
-			if (request.getSession().getAttribute("toFixOrder") == null) {
-				orderService.confirmOrder(order); // maybe stateful?
+			try {
+				/*
+				 * did not place "toFixOrder" in servletContext because it (servletContext) is
+				 * shared with all sessions, so I use session
+				 */
+				if (request.getSession().getAttribute("toFixOrder") == null) {
+					
+					orderService.confirmOrder(order); // maybe stateful?
 
-				if (request.getParameter("valid") != null) {
+					if (request.getParameter("valid") != null) {
 
-					// payment ok
-					orderService.addOrder(order, user, true);
-				} else if (request.getParameter("notValid") != null) {
-					// payment wrong
-					orderService.addOrder(order, user, false);
-				} else if (request.getParameter("random") != null) {
+						// payment ok
+						orderService.addOrder(order, user, true);
+					} else if (request.getParameter("notValid") != null) {
+						// payment wrong
+						orderService.addOrder(order, user, false);
+					} else if (request.getParameter("random") != null) {
 
+						// generate Random
+					} else {
+						// possible
+						System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
 
-					// generate Random
+					}
 				} else {
-					// possible
-					System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
 
+					if (request.getParameter("valid") != null) {
+
+						// payment ok
+						orderService.fixOrder(order, user, true);
+					} else if (request.getParameter("notValid") != null) {
+						// payment wrong
+						orderService.fixOrder(order, user, false);
+					} else if (request.getParameter("random") != null) {
+						// generate Random
+					} else {
+						// possible
+						System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
+
+					}
+					request.getSession().removeAttribute("toFixOrder");
 				}
-			} else {
 
-				if (request.getParameter("valid") != null) {
-
-					// payment ok
-					orderService.fixOrder(order, user, true);
-				} else if (request.getParameter("notValid") != null) {
-					// payment wrong
-					orderService.fixOrder(order, user, false);
-				} else if (request.getParameter("random") != null) {
-					// generate Random
-				} else {
-					// possible
-					System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
-
-				}
-				request.getSession().removeAttribute("toFixOrder");
+				request.getSession().setAttribute("user", user); // called to update user with new order
+				request.getSession().removeAttribute("order");
+			} catch (Exception e) {
+				errorConfirmingOrder = true;
 			}
-
-			request.getSession().setAttribute("user", user); // called to update user with new order
-			request.getSession().removeAttribute("order");
 		}
-		response.sendRedirect(path);
+		if (!errorConfirmingOrder)
+			response.sendRedirect(path);
+		else {
+
+			WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+			ctx.setVariable("error", "Error confirming order");
+			ctx.setVariable("user", user);
+			ctx.setVariable("order", order);
+
+			templateEngine.process("/service/orderConfirmation.html", ctx, response.getWriter());
+		}
 
 	}
 
