@@ -29,7 +29,7 @@ public class DbService {
 		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
 	}
 
-	public void createActivationSchedule(Order order) {
+	public void createActivationSchedule(Order order) throws Exception {
 		ActivationSchedule as = new ActivationSchedule();
 		LocalDate endDate = order.getStartDate().plusMonths(order.getValidityPeriod().getMonthDuration());
 		as.setDateOfAct(order.getStartDate());
@@ -40,7 +40,7 @@ public class DbService {
 	}
 
 
-	public void createAuditing(Order order, User user) {
+	public void createAuditing(Order order, User user) throws Exception{
 		Auditing a = new Auditing();
 		a.setUser(user);
 		a.setAmount(order.getTotalvalue());

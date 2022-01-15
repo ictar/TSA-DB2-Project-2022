@@ -32,7 +32,7 @@ public class OrderService {
 	@EJB
 	private UserService userService;
 
-	public Order getOrder(User user) {
+	public Order getOrder(User user) throws Exception {
 		return em.createNamedQuery("Order.getUserOrders", Order.class).setParameter(1, user).getResultList().get(0);
 	}
 
@@ -71,12 +71,12 @@ public class OrderService {
 		}
 	}
 
-	public void confirmOrder(Order order) {
+	public void confirmOrder(Order order) throws Exception{
 		em.persist(order);
 		em.flush();
 	}
 
-	public void addOrder(Order order, User user, boolean activated) {
+	public void addOrder(Order order, User user, boolean activated) throws Exception{
 		setOrderValidity(order, activated);
 		em.merge(order);
 		if (activated)
@@ -89,9 +89,11 @@ public class OrderService {
 		em.flush();
 	}
 
-	public void fixOrder(Order order, User user, boolean activated) {
+	public void fixOrder(Order order, User user, boolean activated) throws Exception{
 		if (activated) {
 			setOrderValidity(order, activated);
+			
+			//if error is merged but fix user doesnt work? what happens?
 			em.merge(order);
 			userService.fixUser(user);
 			dbService.createActivationSchedule(order);

@@ -20,6 +20,8 @@
 		<p th:text="${user.username}" />
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
+	
+	<h1 th:text="${error}"></h1>
 	<h2>Order recap</h2>
 	<form action="OrderConfirmation" method="POST">
 		<p th:text="'Chosen service package: ' + ${order.servicePackage.name}" />
