@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import it.tsa.EJB.entities.OptProduct;
 import it.tsa.EJB.entities.ValidityPeriod;
 import it.tsa.EJB.exceptions.CreationException;
 

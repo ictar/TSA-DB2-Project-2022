@@ -3,7 +3,6 @@ package it.tsa.WEB.controller;
 import java.io.*;
 
 import javax.ejb.EJB;
-import javax.naming.InitialContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +16,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.tsa.EJB.services.DbService;
 import it.tsa.EJB.services.UserService;
 
 /**

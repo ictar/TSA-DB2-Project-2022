@@ -1,9 +1,10 @@
 package it.tsa.WEB.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -23,6 +24,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
+import it.tsa.EJB.exceptions.CreationException;
 import it.tsa.EJB.services.DbService;
 import it.tsa.EJB.services.OrderService;
 
@@ -37,6 +39,7 @@ public class BuyService extends HttpServlet {
 	private TemplateEngine templateEngine;
 	private ServletContext servletContext;
 	private WebContext ctx;
+	private String path;
 
 	@EJB(name = "project.services/DbService")
 	private DbService dbService;
@@ -57,56 +60,57 @@ public class BuyService extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String path;
-
 		User loggedUser = (User) request.getSession().getAttribute("user");
 		Order order = (Order) request.getSession().getAttribute("order");
-		
+
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
-		
+
 		path = "/service/orderConfirmation.html";
 
 		if (needsToCreateOrder(request, order)) {
 			// if didnt press Confirm button then there is no order to confirm,
 			// so show possible services to buy
 
-			path = "/service/buyservice.html";
+			System.out.println("needs to create order");
 
-			// retrieves servicePackages to show
-			List<ServicePackage> servicePackages = null;
-			servicePackages = dbService.findAllServicePackages();
-			ctx.setVariable("servicePackages", servicePackages);
+			createEmptyPageToDefineOrder(null);
 
 		} else if (definedAndWantsToCreateOrder(order)) {
 			// pressed confirm button then collect all info
+			System.out.println("wants to create order");
 
-			int chosenSP = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("servicePackageId")));
-			int chosenVP;
-			String receivedVP = StringEscapeUtils.escapeJava(request.getParameter("validityPeriodId"));
+			try {
+				int chosenSP = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("servicePackageId")));
+				int chosenVP;
+				String receivedVP = StringEscapeUtils.escapeJava(request.getParameter("validityPeriodId"));
 
-			String dateValue[] = StringEscapeUtils.escapeJava(request.getParameter("startDate")).split("-");
+				LocalDate startDate = LocalDate.parse(request.getParameter("startDate"));
 
-			// TODO maybe do some checking
-			Date startDate = new Date(Integer.parseInt(dateValue[0]) - 1900, Integer.parseInt(dateValue[1]) - 1,
-					Integer.parseInt(dateValue[2]));
-			String[] names = request.getParameterValues("availableOptProdId");
-			List<Integer> chosenOptProds = new ArrayList<Integer>();
-			if (names != null) {
-				List<String> receivedChoicesOfOP = Arrays.asList(names);
-				chosenOptProds = getCorrectElements(receivedChoicesOfOP, chosenSP);
+				if (startDate.isAfter(LocalDate.now())) {
+
+					String[] names = request.getParameterValues("availableOptProdId");
+
+					List<Integer> chosenOptProds = new ArrayList<Integer>();
+					if (names != null) {
+						List<String> receivedChoicesOfOP = Arrays.asList(names);
+						chosenOptProds = getCorrectElements(receivedChoicesOfOP, chosenSP);
+					}
+
+					chosenVP = checkVPCorrectness(receivedVP, chosenSP);
+					order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
+					request.getSession().setAttribute("order", order);
+					ctx.setVariable("order", order);
+				} else
+					createEmptyPageToDefineOrder("Error defining startDate");
+
+			} catch (DateTimeParseException e) {
+				createEmptyPageToDefineOrder("Error defining startDate");
+			} catch (CreationException e) {
+				createEmptyPageToDefineOrder("Error defining " + e.getMessage());
+			} catch (Exception e) {
+
+				createEmptyPageToDefineOrder("Generic error");
 			}
-
-			chosenVP = checkVPCorrectness(receivedVP, chosenSP);
-			if (chosenVP != -1) {
-				order = orderService.createOrder(loggedUser, chosenSP, chosenVP, chosenOptProds, startDate);
-				request.getSession().setAttribute("order", order);
-				ctx.setVariable("order", order);
-			}
-			else {
-				System.out.println("ERRORE IN VP");
-				path = servletContext.getContextPath() + "/GoToHomepage";
-			}
-
 		} else {
 			// get here after being asked to login to confirm order
 
@@ -114,8 +118,9 @@ public class BuyService extends HttpServlet {
 			ctx.setVariable("order", order);
 		}
 		ctx.setVariable("user", loggedUser);
-		
+
 		templateEngine.process(path, ctx, response.getWriter());
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -143,13 +148,13 @@ public class BuyService extends HttpServlet {
 	}
 
 	// check validityPeriod correctness
-	private int checkVPCorrectness(String receivedVP, int chosenSP) {
+	private int checkVPCorrectness(String receivedVP, int chosenSP) throws CreationException {
 		System.out.println("CheckVPCorrectness " + receivedVP);
 		String[] params = receivedVP.split(",");
 		if (Integer.parseInt(params[0]) == chosenSP)
 			return Integer.parseInt(params[1]);
 		else
-			return -1;
+			throw new CreationException("ValidityPeriod");
 	}
 
 	private boolean needsToCreateOrder(HttpServletRequest request, Order order) {
@@ -160,4 +165,14 @@ public class BuyService extends HttpServlet {
 		return order == null;
 	}
 
+	private void createEmptyPageToDefineOrder(String error) {
+
+		path = "/service/buyservice.html";
+
+		// retrieves servicePackages to show
+		List<ServicePackage> servicePackages = null;
+		servicePackages = dbService.findAllServicePackages();
+		ctx.setVariable("servicePackages", servicePackages);
+		ctx.setVariable("error", error);
+	}
 }

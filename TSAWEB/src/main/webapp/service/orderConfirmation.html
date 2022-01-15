@@ -6,8 +6,8 @@
 		user - User
 		order - Order
  -->
- 
- <!-- 
+
+<!-- 
  	display order details then allow to confirm
  	needs order
   -->
@@ -16,33 +16,44 @@
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-
-
-	<div align="right" th:if="${user != null}">
-		<p th:text="${user.username}"/> <a th:href="@{/Logout}">Logout</a>
+	<div class="loginDiv" th:if="${user != null}">
+		<p th:text="${user.username}" />
+		<a th:href="@{/Logout}">Logout</a>
 	</div>
+	<h2>Order recap</h2>
 	<form action="OrderConfirmation" method="POST">
-		Recap order: <br> Chosen servicePackage:
-		<p th:text="${order.servicePackage.name}" />
-		<p th:text="'Duration: ' + ${order.validityPeriod.monthDuration}" />
-		<p th:text="'Price: ' + ${order.validityPeriod.price}" />
+		<p th:text="'Chosen service package: ' + ${order.servicePackage.name}" />
+		<p
+			th:text="'Duration: ' + ${order.validityPeriod.monthDuration} + ' months'" />
+		<p th:text="'Price: ' + ${order.validityPeriod.price} + ' euro'" />
 		Included services:
-		<p th:each="service: ${order.servicePackage.availableServices}"
-			th:text="${service.name}" />
-		<p th:unless="${order.chosenOptProds.empty}">Chosen optional products:<p/>
-		<p th:each="op: ${order.chosenOptProds}"
-			th:text="${op.name} + ' -> ' + ${op.monthlyFee} + ' euro'" />
-		Chosen startDate:
-		<p th:text="${order.startDate}" />
-		Total value:
-		<p th:text="${order.totalvalue}" />
+		<ul>
+			<li th:each="service: ${order.servicePackage.availableServices}"
+				th:text="${service.name}" />
+		</ul>
+
+		<p th:unless="${order.chosenOptProds.empty}">Chosen optional
+			products:
+		<ul>
+			<li th:each="op: ${order.chosenOptProds}">
+				<p th:inline="text">
+					[[${op.name}]]<br>[[${op.monthlyFee}]] euro
+				</p>
+			</li>
+		</ul>
+
+		</p>
+
+		<p th:text="'Chosen start date: ' + ${order.startDate}" />
+		<p th:text="'Total value: ' + ${order.totalvalue} + ' euro'" />
 		<div th:if="${user != null}">
+			Select payment outcome
 			<input type="submit" name="valid" value="Valid"> <input
 				type="submit" name="notValid" value="Not Valid"> <input
 				type="submit" name="random" value="Random">
 		</div>
-		<input type="submit" name="deleteOrder" value="Delete Order"/>
-		<input th:unless="${user != null}" type="submit" name="login" value="Login"> 
+		<input type="submit" name="deleteOrder" value="Delete Order" /><br> <input
+			th:unless="${user != null}" type="submit" name="login" value="Login">
 	</form>
 </body>
 </html>

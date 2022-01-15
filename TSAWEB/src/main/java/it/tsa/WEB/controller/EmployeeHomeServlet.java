@@ -20,9 +20,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.tsa.EJB.entities.OptProduct;
 import it.tsa.EJB.entities.Service;
 import it.tsa.EJB.entities.ValidityPeriod;
-import it.tsa.EJB.services.EmployeeService;
 import it.tsa.EJB.services.ProductService;
-import it.tsa.EJB.services.ServicePkgService;
 import it.tsa.EJB.services.ServiceService;
 import it.tsa.EJB.services.ValidityPeriodService;
 

@@ -1,6 +1,9 @@
 package it.tsa.EJB.services;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.HashSet;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.entities.ValidityPeriod;
+import it.tsa.EJB.exceptions.CreationException;
 
 @Stateless
 public class OrderService {
@@ -32,34 +36,39 @@ public class OrderService {
 		return em.createNamedQuery("Order.getUserOrders", Order.class).setParameter(1, user).getResultList().get(0);
 	}
 
-	public Order createOrder(User user, int chosenSP, int chosenVP, List<Integer> chosenOP, Date startDate) {
-		HashSet<OptProduct> chosenOptProds = new HashSet<OptProduct>();
-		Order newOrder = new Order();
-		Date date = new Date();
-		newOrder.setUser(user);
+	public Order createOrder(User user, int chosenSP, int chosenVP, List<Integer> chosenOP, LocalDate startDate)
+			throws CreationException {
 
-		// TODO is findOne/getOne the right implementation?
-		newOrder.setValidityPeriod(em.createNamedQuery("ValidityPeriod.getOne", ValidityPeriod.class)
-				.setParameter(1, chosenVP).getResultList().get(0));
-		newOrder.setServicePackage(em.createNamedQuery("ServicePackage.findOne", ServicePackage.class)
-				.setParameter(1, chosenSP).getResultList().get(0));
+		try {
+			HashSet<OptProduct> chosenOptProds = new HashSet<OptProduct>();
+			Order newOrder = new Order();
+			LocalDateTime rightNow = LocalDateTime.now(ZoneId.of("GMT+1"));
+			newOrder.setUser(user);
 
-		for (Integer optProd : chosenOP) {
-			chosenOptProds.add(em.createNamedQuery("OptProduct.findOne", OptProduct.class).setParameter(1, optProd)
-					.getResultList().get(0));
+			// TODO is findOne/getOne the right implementation?
+			newOrder.setValidityPeriod(em.createNamedQuery("ValidityPeriod.getOne", ValidityPeriod.class)
+					.setParameter(1, chosenVP).getResultList().get(0));
+			newOrder.setServicePackage(em.createNamedQuery("ServicePackage.findOne", ServicePackage.class)
+					.setParameter(1, chosenSP).getResultList().get(0));
+
+			for (Integer optProd : chosenOP) {
+				chosenOptProds.add(em.createNamedQuery("OptProduct.findOne", OptProduct.class).setParameter(1, optProd)
+						.getResultList().get(0));
+			}
+
+			newOrder.setChosenOptProds(chosenOptProds);
+			newOrder.setDateOfCreation(rightNow.toLocalDate());
+			newOrder.setHourOfCreation(rightNow.get(ChronoField.HOUR_OF_DAY));
+			newOrder.setRejectedFlag(false);
+			newOrder.computeTotalValue();
+			newOrder.setValidityFlag(false);
+			newOrder.setStartDate(startDate);
+
+			// dont add order to user because this creates only Order instance
+			return newOrder;
+		} catch (Exception e) {
+			throw new CreationException("Order");
 		}
-
-		newOrder.setChosenOptProds(chosenOptProds);
-		newOrder.setDateOfCreation(date);
-		newOrder.setHourOfCreation(date.getHours());
-		newOrder.setRejectedFlag(false);
-		newOrder.setTotalvalue(newOrder.computeTotalCost());
-		newOrder.setValidityFlag(false);
-		newOrder.setStartDate(startDate);
-
-		//dont add order to user because this creates only Order instance
-		System.out.println("Start date in orderservice createorder" + newOrder.getStartDate());
-		return newOrder;
 	}
 
 	public void confirmOrder(Order order) {
@@ -85,29 +94,28 @@ public class OrderService {
 			setOrderValidity(order, activated);
 			em.merge(order);
 			userService.fixUser(user);
-		}
-		else
+			dbService.createActivationSchedule(order);
+		} else
 			userService.userInsolvent(user);
 
 		em.merge(order);
 		em.flush();
 	}
-	
+
 	private void setOrderValidity(Order order, boolean valid) {
 		order.setValidityFlag(valid);
 		order.setRejectedFlag(!valid);
 	}
-  
-  public List<Order> getAllSuspendedOrders() {
+
+	public List<Order> getAllSuspendedOrders() {
 		List<Order> oList;
-		
+
 		try {
-			oList = em.createNamedQuery("Order.getSuspended", Order.class)
-					.getResultList();
+			oList = em.createNamedQuery("Order.getSuspended", Order.class).getResultList();
 		} catch (PersistenceException e) {
 			return null;
 		}
-		
+
 		return oList;
-  }
+	}
 }

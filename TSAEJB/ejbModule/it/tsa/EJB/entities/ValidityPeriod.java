@@ -14,11 +14,21 @@ public class ValidityPeriod {
 	private int monthDuration;
 	private float price;
 	
-	@ManyToOne
+	/*
+	 * don't cascade because ValidityPeriod can be deleted while
+	 * it is useful to keep the ServicePackage stored.
+	 * Lazy because one ValidityPeriod can have many ServicePackage associated
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name ="servicePkgId")
 	private ServicePackage servicePackage;
 	
-	@OneToMany(mappedBy="validityPeriod")
+	/*
+	 * don't cascade because ValidityPeriod can be deleted while
+	 * it is useful to keep the Order stored.
+	 * Lazy because one ValidityPeriod can have many Order associated
+	 */
+	@OneToMany(mappedBy="validityPeriod", fetch = FetchType.LAZY)
 	private Set<Order> actualOrders;
 	
 	public int getId() {
