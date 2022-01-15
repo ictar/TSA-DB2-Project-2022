@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import it.tsa.EJB.entities.ActivationSchedule;
 import it.tsa.EJB.entities.Auditing;
@@ -21,12 +22,28 @@ public class DbService {
 	private EntityManager em;
 
 	public ServicePackage retrieveServicePackage(int servicePackageId) {
-		return em.createNamedQuery("ServicePackage.findOne", ServicePackage.class).setParameter(1, servicePackageId)
-				.getResultList().get(0);
+
+		ServicePackage result;
+
+		try {
+			result= em.createNamedQuery("ServicePackage.findOne", ServicePackage.class).setParameter(1, servicePackageId)
+					.getResultList().get(0);
+		} catch (PersistenceException e) {
+			return null;
+		}
+		return result;
+
 	}
 
 	public List<ServicePackage> findAllServicePackages() {
-		return em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
+		List<ServicePackage> result;
+
+		try {
+			result= em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
+		} catch (PersistenceException e) {
+			return null;
+		}
+		return result;
 	}
 
 	public void createActivationSchedule(Order order) throws Exception {
