@@ -1,8 +1,6 @@
 package it.tsa.WEB.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -13,18 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.tsa.EJB.entities.Order;
-import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.services.DbService;
 import it.tsa.EJB.services.OrderService;
-import it.tsa.EJB.services.UserService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -53,7 +47,7 @@ public class RejectedOrder extends HttpServlet {
 			throws ServletException, IOException {
 		String path = "/service/orderConfirmation.html";
 		int orderId = Integer.parseInt(request.getParameter("toFixOrderId"));
-		servletContext.setAttribute("toFixOrder", orderId);
+		request.getSession().setAttribute("toFixOrder", orderId);
 		User currentUser = (User) request.getSession().getAttribute("user");
 		List<Order> orders = currentUser.getOrders().stream().filter(order -> order.getId() == orderId).toList();
 		

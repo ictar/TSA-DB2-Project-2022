@@ -18,7 +18,6 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.tsa.EJB.entities.Order;
-import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
 

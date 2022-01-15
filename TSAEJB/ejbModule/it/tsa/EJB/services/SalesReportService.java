@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
-import it.tsa.EJB.entities.OptProduct;
 
 @Stateless
 public class SalesReportService {

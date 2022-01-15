@@ -1,9 +1,6 @@
 package it.tsa.WEB.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -13,18 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.tsa.EJB.entities.Order;
-import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.services.DbService;
 import it.tsa.EJB.services.OrderService;
-import it.tsa.EJB.services.UserService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -35,7 +27,6 @@ public class OrderConfirmation extends HttpServlet {
 
 	private TemplateEngine templateEngine;
 	private ServletContext servletContext;
-	private WebContext ctx;
 
 	@EJB(name = "project.services/OrderService")
 	private OrderService orderService;
@@ -89,8 +80,8 @@ public class OrderConfirmation extends HttpServlet {
 					System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
 
 				}
-				request.getSession().removeAttribute("toFixOrder");
 			} else {
+
 				if (request.getParameter("valid") != null) {
 
 					// payment ok
@@ -105,6 +96,7 @@ public class OrderConfirmation extends HttpServlet {
 					System.out.println("Entered in Third else in orderconfirmation.doPost(.)<");
 
 				}
+				request.getSession().removeAttribute("toFixOrder");
 			}
 
 			request.getSession().setAttribute("user", user); // called to update user with new order

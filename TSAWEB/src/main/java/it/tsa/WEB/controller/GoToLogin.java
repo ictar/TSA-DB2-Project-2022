@@ -1,7 +1,6 @@
 package it.tsa.WEB.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -16,8 +15,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.tsa.EJB.entities.ServicePackage;
-import it.tsa.EJB.entities.User;
 import it.tsa.EJB.services.DbService;
 
 /**

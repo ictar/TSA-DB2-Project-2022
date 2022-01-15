@@ -4,12 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -98,6 +94,7 @@ public class OrderService {
 			setOrderValidity(order, activated);
 			em.merge(order);
 			userService.fixUser(user);
+			dbService.createActivationSchedule(order);
 		} else
 			userService.userInsolvent(user);
 

@@ -22,7 +22,6 @@ import it.tsa.EJB.services.OrderService;
 import it.tsa.EJB.services.SalesReportService;
 import it.tsa.EJB.services.UserService;
 import it.tsa.EJB.entities.Auditing;
-import it.tsa.EJB.entities.OptProduct;
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
 

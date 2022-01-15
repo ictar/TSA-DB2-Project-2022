@@ -1,24 +1,18 @@
 package it.tsa.EJB.services;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 
 import it.tsa.EJB.entities.ActivationSchedule;
 import it.tsa.EJB.entities.Auditing;
-import it.tsa.EJB.entities.OptProduct;
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.entities.ValidityPeriod;
-import it.tsa.EJB.exceptions.LoginErrorException;
 
 @Stateless
 public class DbService {
@@ -37,11 +31,12 @@ public class DbService {
 
 	public void createActivationSchedule(Order order) {
 		ActivationSchedule as = new ActivationSchedule();
-		Date endDate = order.getStartDate();
-		endDate.setMonth(order.getStartDate().getMonth() + order.getValidityPeriod().getMonthDuration());
+		LocalDate endDate = order.getStartDate().plusMonths(order.getValidityPeriod().getMonthDuration());
 		as.setDateOfAct(order.getStartDate());
 		as.setDateOfDeact(endDate);
 		as.setOrder(order);
+		em.persist(as);
+		em.flush();
 	}
 
 

@@ -1,10 +1,8 @@
 package it.tsa.WEB.controller;
 
 import java.io.*;
-import java.util.List;
 
 import javax.ejb.EJB;
-import javax.naming.InitialContext;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +19,6 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
 import it.tsa.EJB.exceptions.LoginErrorException;
-import it.tsa.EJB.services.DbService;
 import it.tsa.EJB.services.UserService;
 
 @WebServlet("/UserLogin")
