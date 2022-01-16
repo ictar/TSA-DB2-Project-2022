@@ -46,46 +46,20 @@ public class DbService {
 		return result;
 	}
 
-	public void createActivationSchedule(Order order) throws Exception {
+	public ActivationSchedule createActivationSchedule(Order order) throws Exception {
 		ActivationSchedule as = new ActivationSchedule();
 		LocalDate endDate = order.getStartDate().plusMonths(order.getValidityPeriod().getMonthDuration());
 		as.setDateOfAct(order.getStartDate());
 		as.setDateOfDeact(endDate);
-		as.setOrder(order);
-		em.persist(as);
-		em.flush();
+		as.setOrder(order); //for completeness when adding to db
+		return as;
 	}
-
 
 	public void createAuditing(Order order, User user) throws Exception{
 		Auditing a = new Auditing();
 		a.setUser(user);
 		a.setAmount(order.getTotalvalue());
 		a.setLastRejectionTime(new Timestamp(System.currentTimeMillis()));
-		em.persist(a);
-		em.flush();
+		em.merge(a);
 	}
-	
-	// examples
-	/*
-	 * public int insertArtist(String name) { Artist newArtist = new Artist();
-	 * newArtist.setName(name); em.persist(newArtist); em.flush(); return
-	 * newArtist.getID(); }
-	 * 
-	 * public boolean insertSong(String name, String artistName) { Song newSong =
-	 * new Song(); newSong.setName(name);
-	 * 
-	 * List<Artist> tags = em.createNamedQuery("Artist.getIDFromName",
-	 * Artist.class).setParameter("name", artistName) .getResultList();
-	 * System.out.println("Result " +tags.get(0)); if (tags.size() > 0) {
-	 * newSong.setArtist(tags.get(0)); em.persist(newSong); em.flush(); return true;
-	 * } else return false; }
-	 * 
-	 * public boolean updateSong(int id) { //instead of persist call merge (?) Song
-	 * a = em.find(Song.class, id); System.out.println("Song: " + a); if (a == null)
-	 * return false; a.setName("CAO"); em.merge(a); return true; }
-	 * 
-	 * public boolean deleteArtist(int id) { Artist a = em.find(Artist.class, id);
-	 * if (a == null) return false; em.remove(a); return true; }
-	 */
 }

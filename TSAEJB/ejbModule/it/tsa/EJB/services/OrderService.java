@@ -71,37 +71,28 @@ public class OrderService {
 		}
 	}
 
-	public void confirmOrder(Order order) throws Exception{
-		em.persist(order);
-		em.flush();
+	public int confirmOrder(Order order) throws Exception {
+		Order mergedOrder = em.merge(order);
+		
+		em.flush(); //flush otherwise no order found in em.find in attemptPayment
+		return mergedOrder.getId();
 	}
 
-	public void addOrder(Order order, User user, boolean activated) throws Exception{
+	public User attemptPayment(int orderId, boolean activated) throws Exception{
+		Order order = em.find(Order.class, orderId);
+		User user = em.find(User.class, order.getUser().getId());
 		setOrderValidity(order, activated);
-		em.merge(order);
-		if (activated)
-			dbService.createActivationSchedule(order);
-		else
-			userService.userInsolvent(user);
-
-		user.addOrder(order);
-
-		em.flush();
-	}
-
-	public void fixOrder(Order order, User user, boolean activated) throws Exception{
+		
 		if (activated) {
-			setOrderValidity(order, activated);
-			
-			//if error is merged but fix user doesnt work? what happens?
-			em.merge(order);
+			order.setActivationSchedule(dbService.createActivationSchedule(order));
 			userService.fixUser(user);
-			dbService.createActivationSchedule(order);
-		} else
+		}
+		else 
 			userService.userInsolvent(user);
-
-		em.merge(order);
+		
 		em.flush();
+		em.refresh(user);
+		return user;
 	}
 
 	private void setOrderValidity(Order order, boolean valid) {
@@ -120,4 +111,5 @@ public class OrderService {
 
 		return oList;
 	}
+	
 }

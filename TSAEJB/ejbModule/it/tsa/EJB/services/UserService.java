@@ -17,16 +17,19 @@ public class UserService {
 	private EntityManager em;
 
 	public User checkCredentials(String usrn, String pwd) throws LoginErrorException {
+		System.out.println("checkCredentials em: " + em);
 		List<User> uList = null;
+		User result;
 		try {
 			uList = em.createNamedQuery("User.checkCredentials", User.class).setParameter(1, usrn).setParameter(2, pwd)
 					.getResultList();
 
+			result = em.find(User.class, uList.get(0).getId());
 		} catch (PersistenceException e) {
 			throw new LoginErrorException();
 		}
 		if (uList.size() == 1)
-			return uList.get(0);
+			return result;
 		else
 			throw new LoginErrorException();
 	}
@@ -38,18 +41,16 @@ public class UserService {
 		uList = em.createNamedQuery("User.checkDuplicateUsername", User.class).setParameter(1, username)
 				.getResultList();
 
-		
 		if (!uList.isEmpty())
 			return false;
-		
-		newUser= new User();
+
+		newUser = new User();
 		newUser.setUsername(username);
 		newUser.setPassword(pwd);
 		newUser.setEmail(email);
 
 		try {
-			em.persist(newUser);
-			em.flush();
+			em.merge(newUser);
 		} catch (Exception e) {
 			return false;
 		}
@@ -57,14 +58,13 @@ public class UserService {
 		return true;
 	}
 
-	public void userInsolvent(User user) throws Exception{
+	public void userInsolvent(User user) throws Exception {
 		user.failedPayment();
-		em.merge(user);
+		
 	}
 
-	public void fixUser(User user) throws Exception{
+	public void fixUser(User user) throws Exception {
 		user.decreaseFailedPayments();
-		em.merge(user);
 	}
 
 	public List<User> getInsolventUsers() {

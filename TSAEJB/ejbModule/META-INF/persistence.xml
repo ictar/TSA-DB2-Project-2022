@@ -16,7 +16,7 @@
 		<class>it.tsa.EJB.entities.User</class>
 		<class>it.tsa.EJB.entities.ValidityPeriod</class>
 		<properties>
-			<property name="eclipselink.logging.level" value="FINE" />
+			<property name="eclipselink.logging.level" value="OFF" />
 		</properties>
 	</persistence-unit>
 

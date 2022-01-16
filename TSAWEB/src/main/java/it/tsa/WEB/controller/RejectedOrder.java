@@ -45,6 +45,7 @@ public class RejectedOrder extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		String path = "/service/orderConfirmation.html";
 		int orderId = Integer.parseInt(request.getParameter("toFixOrderId"));
 		request.getSession().setAttribute("toFixOrder", orderId);
@@ -53,11 +54,14 @@ public class RejectedOrder extends HttpServlet {
 		
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 		if (orders.size() == 1) {
-			request.getSession().setAttribute("order", orders.get(0));
 			
+			request.getSession().setAttribute("order", orders.get(0));
 			ctx.setVariable("order", orders.get(0));
 			ctx.setVariable("user", currentUser);
 		}
+		else
+			ctx.setVariable("error", "Error retrieving rejected orders");
+		
 		
 		templateEngine.process(path, ctx, response.getWriter());
 	}

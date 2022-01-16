@@ -39,8 +39,7 @@ public class User implements Serializable {
 	 * Cascade merge because from User we want to be able to modify orders,
 	 * delete because deleting user must delete also related orders
 	 */
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="user",
-			cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="user")
 	private List<Order> orders;
 	
 	
@@ -117,17 +116,13 @@ public class User implements Serializable {
 		return numFailedPayments;
 	}
 	
-	public String toString() {
-		return "User id: " + getId() + " name: " + getUsername();
-	}
 	
 	public List<Order> getOrders(){
 		return this.orders;
 	}
    
 	public void addOrder(Order order) {
-		getOrders().add(order);
-		order.setUser(this);
+		orders.add(order);
 	}
 	
 	public List<Auditing> getAudits(){

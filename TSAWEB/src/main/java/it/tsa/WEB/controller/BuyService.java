@@ -66,19 +66,16 @@ public class BuyService extends HttpServlet {
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
 		path = "/service/orderConfirmation.html";
-
+		
 		if (needsToCreateOrder(request, order)) {
 			// if didnt press Confirm button then there is no order to confirm,
 			// so show possible services to buy
-
-			System.out.println("needs to create order");
 
 			createEmptyPageToDefineOrder(null);
 
 		} else if (definedAndWantsToCreateOrder(order)) {
 			// pressed confirm button then collect all info
-			System.out.println("wants to create order");
-
+			
 			try {
 				int chosenSP = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("servicePackageId")));
 				int chosenVP;
@@ -112,7 +109,7 @@ public class BuyService extends HttpServlet {
 				createEmptyPageToDefineOrder("Generic error");
 			}
 		} else {
-			// get here after being asked to login to confirm order
+			// get here after having logged in in order to confirm order
 
 			order.setUser(loggedUser);
 			ctx.setVariable("order", order);

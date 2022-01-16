@@ -50,25 +50,26 @@ public class GoToHomepage extends HttpServlet {
 
 		User loggedUser = (User) request.getSession().getAttribute("user");
 
-
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
 		if (loggedUser != null) {
-			//copied to avoid using user.getOrders().get(i) everytime
+
 			List<Order> allOrders = new ArrayList<Order>(loggedUser.getOrders());
 			List<Order> rejectedOrders = new ArrayList<Order>();
-			
-			for(int i=0;i<allOrders.size();i++) {
-				if (allOrders.get(i).isRejectedFlag())
-					rejectedOrders.add(allOrders.get(i));
+
+			for (Order order : allOrders) {
+
+				if (order.isRejectedFlag() || !order.isValidityFlag())
+					rejectedOrders.add(order);
 			}
 
 			ctx.setVariable("rejectedOrders", rejectedOrders);
+
+			ctx.setVariable("user", loggedUser);
+			templateEngine.process(path, ctx, response.getWriter());
+		} else {
+			response.sendRedirect(servletContext.getContextPath() + "/GoToLogin");
 		}
-
-		ctx.setVariable("user", loggedUser);
-
-		templateEngine.process(path, ctx, response.getWriter());
 
 	}
 

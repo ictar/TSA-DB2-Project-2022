@@ -59,7 +59,7 @@ public class Order {
 	 * Don't cascade because we don't want to allow OptProduct5 modification
 	 * from Order
 	 */
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(
 			name = "chosenOptProd",
 			joinColumns= @JoinColumn(name ="orderId"),
@@ -67,6 +67,17 @@ public class Order {
 	)
 	private Set<OptProduct> chosenOptProds;
 		
+	@OneToOne(cascade = CascadeType.PERSIST, mappedBy = "order")
+	private ActivationSchedule activationSchedule;
+	
+	public ActivationSchedule getActivationSchedule() {
+		return activationSchedule;
+	}
+	
+	public void setActivationSchedule(ActivationSchedule actSched) {
+		activationSchedule = actSched;
+	}
+	
 	public int getId() {
 		return id;
 	}

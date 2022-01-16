@@ -56,11 +56,12 @@ public class UserLogin extends HttpServlet {
 		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 
 		try {
-			User success = userService.checkCredentials(username, password);
+			User user = userService.checkCredentials(username, password);
 			Order createdOrder = (Order) request.getSession().getAttribute("order");
 			request.getSession().removeAttribute("onlyLogin");
 			
-			request.getSession().setAttribute("user", success);
+			request.getSession().setAttribute("user", user);
+			
 			if(createdOrder != null) 
 				path = servletContext.getContextPath() + "/BuyService";
 			else
