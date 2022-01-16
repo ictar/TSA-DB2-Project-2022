@@ -17,8 +17,10 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.tsa.EJB.entities.Employee;
 import it.tsa.EJB.entities.OptProduct;
 import it.tsa.EJB.entities.Service;
+import it.tsa.EJB.entities.User;
 import it.tsa.EJB.entities.ValidityPeriod;
 import it.tsa.EJB.services.ProductService;
 import it.tsa.EJB.services.ServiceService;
@@ -28,7 +30,7 @@ import it.tsa.EJB.services.ValidityPeriodService;
  * Servlet implementation class EmployeeHomeServlet
  */
 @WebServlet("/EmployeeHome")
-public class EmployeeHomeServlet extends HttpServlet {
+public class EmployeeHome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private TemplateEngine tmplEngine;
@@ -46,7 +48,7 @@ public class EmployeeHomeServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EmployeeHomeServlet() {
+    public EmployeeHome() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -75,6 +77,10 @@ public class EmployeeHomeServlet extends HttpServlet {
 		String path = "/employee/home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext);
+		
+		// set employee
+		Employee loggedEmployee =  (Employee) session.getAttribute("employee");
+		ctx.setVariable("employee", loggedEmployee);
 		
 		/* if there are any error messages */
 		if(session.getAttribute("cpErrMsg") != null) {
@@ -107,15 +113,15 @@ public class EmployeeHomeServlet extends HttpServlet {
 			services = srvService.findAllService();
 			prods = prodService.findAllProducts();
 			vps = vpService.findAllUnusedValidityPeriods();
+			
+			ctx.setVariable("serviceSet", services);
+			ctx.setVariable("productSet", prods);
+			ctx.setVariable("validperiodSet", vps);
+			
 		} catch (Exception e){
 			ctx.setVariable("cspErrMsg", e.getMessage());
-			tmplEngine.process(path, ctx, response.getWriter());
-			return;
 		}
 		
-		ctx.setVariable("serviceSet", services);
-		ctx.setVariable("productSet", prods);
-		ctx.setVariable("validperiodSet", vps);
 		
 		tmplEngine.process(path, ctx, response.getWriter());
 	}

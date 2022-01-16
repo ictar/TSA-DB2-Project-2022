@@ -16,7 +16,7 @@ import it.tsa.EJB.services.ProductService;
  * Servlet implementation class CreateProductServlet
  */
 @WebServlet("/CreateProduct")
-public class CreateProductServlet extends HttpServlet {
+public class CreateProduct extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB(name = "it.tsa.EJB.services/ProductService")
@@ -25,7 +25,7 @@ public class CreateProductServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public CreateProductServlet() {
+	public CreateProduct() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

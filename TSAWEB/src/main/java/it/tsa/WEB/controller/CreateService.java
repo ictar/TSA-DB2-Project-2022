@@ -3,7 +3,6 @@ package it.tsa.WEB.controller;
 import java.io.IOException;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.thymeleaf.context.WebContext;
 
 import it.tsa.EJB.services.ServiceService;
 
@@ -20,7 +17,7 @@ import it.tsa.EJB.services.ServiceService;
  * Servlet implementation class CreateServiceServlet
  */
 @WebServlet("/CreateService")
-public class CreateServiceServlet extends HttpServlet {
+public class CreateService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@EJB(name="it.tsa.EJB.services/ServiceService")
@@ -29,7 +26,7 @@ public class CreateServiceServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateServiceServlet() {
+    public CreateService() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -47,16 +44,14 @@ public class CreateServiceServlet extends HttpServlet {
 			return;
 		}
 		
-		ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         
         String name, type;
         int includedMin, includedSMS, includedGB;
         float extraMinFee, extraSMSFee, extraGBFee;
         
         try {
-        		name = StringEscapeUtils.escapeJava(request.getParameter("serviceName"));
-        		type = StringEscapeUtils.escapeJava(request.getParameter("serviceType"));
+        		name = request.getParameter("serviceName");
+        		type = request.getParameter("serviceType");
         		// get parameters and check
         		// initial to -1 imply no need by default
         		includedMin = includedSMS = includedGB = -1;
@@ -65,18 +60,18 @@ public class CreateServiceServlet extends HttpServlet {
         		case "fixphone":
         			break;
         		case "mbphone":
-        			includedMin = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraMinute")));
-        			includedSMS = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraSMS")));
-        			extraMinFee = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraMinuteFee")));
-        			extraSMSFee = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraSMSFee")));
+        			includedMin = Integer.valueOf(request.getParameter("extraMinute"));
+        			includedSMS = Integer.valueOf(request.getParameter("extraSMS"));
+        			extraMinFee = Float.valueOf(request.getParameter("extraMinuteFee"));
+        			extraSMSFee = Float.valueOf(request.getParameter("extraSMSFee"));
         			
         			if(includedMin < 0 || includedSMS < 0 || extraMinFee < 0 || extraSMSFee < 0) {
         				throw new Exception("Invalid field!");
         			}
         			break;
         		case "int":
-        			includedGB = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraGB")));
-        			extraGBFee = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraGBFee")));
+        			includedGB = Integer.valueOf(request.getParameter("extraGB"));
+        			extraGBFee = Float.valueOf(request.getParameter("extraGBFee"));
         			
         			if(includedGB < 0 || extraGBFee < 0) {
         				throw new Exception("Invalid field!");
