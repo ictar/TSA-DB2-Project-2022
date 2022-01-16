@@ -63,7 +63,7 @@ public class UserLogin extends HttpServlet {
 			request.getSession().setAttribute("user", user);
 			
 			if(createdOrder != null) 
-				path = servletContext.getContextPath() + "/BuyService";
+				path = servletContext.getContextPath() + "/OrderConfirmation";
 			else
 				path = servletContext.getContextPath() + "/GoToHomepage";
 			

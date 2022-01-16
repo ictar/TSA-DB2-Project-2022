@@ -68,7 +68,7 @@ public class GoToHomepage extends HttpServlet {
 			ctx.setVariable("user", loggedUser);
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
-			response.sendRedirect(servletContext.getContextPath() + "/GoToLogin");
+			response.sendRedirect(servletContext.getContextPath() + "/BuyService");
 		}
 
 	}

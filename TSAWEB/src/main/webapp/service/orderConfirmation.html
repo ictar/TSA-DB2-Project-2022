@@ -20,10 +20,10 @@
 		<p th:text="${user.username}" />
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
-	
+
 	<h1 th:text="${error}"></h1>
 	<h2>Order recap</h2>
-	<form action="OrderConfirmation" method="POST">
+	<form action="OrderUploader" method="POST">
 		<p th:text="'Chosen service package: ' + ${order.servicePackage.name}" />
 		<p
 			th:text="'Duration: ' + ${order.validityPeriod.monthDuration} + ' months'" />
@@ -34,28 +34,29 @@
 				th:text="${service.name}" />
 		</ul>
 
-		<p th:unless="${order.chosenOptProds.empty}">Chosen optional
-			products:
-		<ul>
-			<li th:each="op: ${order.chosenOptProds}">
-				<p th:inline="text">
-					[[${op.name}]]<br>[[${op.monthlyFee}]] euro
-				</p>
-			</li>
-		</ul>
+		<div th:unless="${order.chosenOptProds.empty}">
+			Chosen optional products:
+			<ul>
+				<li th:each="op: ${order.chosenOptProds}">
+					<p th:inline="text">
+						[[${op.name}]]<br>[[${op.monthlyFee}]] euro
+					</p>
+				</li>
+			</ul>
 
-		</p>
+		</div>
 
 		<p th:text="'Chosen start date: ' + ${order.startDate}" />
 		<p th:text="'Total value: ' + ${order.totalvalue} + ' euro'" />
 		<div th:if="${user != null}">
-			Select payment outcome
-			<input type="submit" name="valid" value="Valid"> <input
-				type="submit" name="notValid" value="Not Valid"> <input
-				type="submit" name="random" value="Random">
+			Select payment outcome <input type="submit" name="valid"
+				value="Valid"> <input type="submit" name="notValid"
+				value="Not Valid"> <input type="submit" name="random"
+				value="Random">
 		</div>
-		<input type="submit" name="deleteOrder" value="Delete Order" /><br> <input
-			th:unless="${user != null}" type="submit" name="login" value="Login">
+		<input type="submit" name="deleteOrder" value="Delete Order" /><br>
+		<input th:unless="${user != null}" type="submit" name="login"
+			value="Login">
 	</form>
 </body>
 </html>
