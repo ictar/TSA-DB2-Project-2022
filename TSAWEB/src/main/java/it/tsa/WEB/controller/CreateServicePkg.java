@@ -18,7 +18,7 @@ import it.tsa.EJB.services.ServicePkgService;
  * Servlet implementation class CreateServicePkgServlet
  */
 @WebServlet("/CreateServicePkg")
-public class CreateServicePkgServlet extends HttpServlet {
+public class CreateServicePkg extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@EJB(name="it.tsa.EJB.services/ServicePkgService")
@@ -27,7 +27,7 @@ public class CreateServicePkgServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateServicePkgServlet() {
+    public CreateServicePkg() {
         super();
         // TODO Auto-generated constructor stub
     }

@@ -23,7 +23,7 @@ import it.tsa.EJB.services.EmployeeService;
  * Servlet implementation class EmployeeLoginServlet
  */
 @WebServlet("/EmployeeLogin")
-public class EmployeeLoginServlet extends HttpServlet {
+public class EmployeeLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine tmplEngine;
 	
@@ -33,7 +33,7 @@ public class EmployeeLoginServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EmployeeLoginServlet() {
+    public EmployeeLogin() {
         super();
         // TODO Auto-generated constructor stub
     }

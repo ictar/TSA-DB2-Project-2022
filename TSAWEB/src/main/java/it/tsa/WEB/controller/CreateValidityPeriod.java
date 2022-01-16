@@ -3,7 +3,6 @@ package it.tsa.WEB.controller;
 import java.io.IOException;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.thymeleaf.context.WebContext;
 
 import it.tsa.EJB.services.ValidityPeriodService;
 
@@ -20,7 +17,7 @@ import it.tsa.EJB.services.ValidityPeriodService;
  * Servlet implementation class ValidityPeriodServlet
  */
 @WebServlet("/CreateValidityPeriod")
-public class CreateValidityPeriodServlet extends HttpServlet {
+public class CreateValidityPeriod extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	@EJB(name="it.tsa.EJB.services/ValidityPeriodService")
@@ -29,7 +26,7 @@ public class CreateValidityPeriodServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateValidityPeriodServlet() {
+    public CreateValidityPeriod() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -47,15 +44,12 @@ public class CreateValidityPeriodServlet extends HttpServlet {
 			return;
 		}
 		
-		ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        
         int duration;
         float price;
         
         try {
-        		duration = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("duration")));
-        		price = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("price")));
+        		duration = Integer.valueOf(request.getParameter("duration"));
+        		price = Float.valueOf(request.getParameter("price"));
         		 		
         		// create a new validity period
         		vpService.createAValidityPeriod(duration, price);

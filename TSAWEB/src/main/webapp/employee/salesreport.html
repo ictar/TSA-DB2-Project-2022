@@ -16,8 +16,10 @@
 </head>
 <body>
 
-<div align="right">
+<div class="loginDiv" th:if="${employee != null}" align="right">
+	<p th:text="${employee.getUsername()}" />
 	<a th:href = "@{/EmployeeHome}">Home</a><br>
+	<a th:href="@{/Logout}">Logout</a>
 </div>
 
 <h3>Number of total purchases per package: </h3>
@@ -143,7 +145,7 @@
 		</tr>
 		<tr th:each="ad: ${auditList}">
 			<td th:text="${ad.getId()}"></td>
-			<td th:text="${ad.getUserId()}"></td>
+			<td th:text="${ad.getUser().getId()}"></td>
 			<td th:text="${ad.getUsername()}"></td>
 			<td th:text="${ad.getEmail()}"></td>
 			<td th:text="${ad.getAmount()}"></td>

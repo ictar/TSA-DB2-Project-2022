@@ -22,6 +22,7 @@ import it.tsa.EJB.services.OrderService;
 import it.tsa.EJB.services.SalesReportService;
 import it.tsa.EJB.services.UserService;
 import it.tsa.EJB.entities.Auditing;
+import it.tsa.EJB.entities.Employee;
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
 
@@ -29,7 +30,7 @@ import it.tsa.EJB.entities.User;
  * Servlet implementation class SalesReportServlet
  */
 @WebServlet("/SalesReport")
-public class SalesReportServlet extends HttpServlet {
+public class SalesReport extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private TemplateEngine tmplEngine;
@@ -46,7 +47,7 @@ public class SalesReportServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SalesReportServlet() {
+    public SalesReport() {
         super();
     }
 
@@ -74,6 +75,10 @@ public class SalesReportServlet extends HttpServlet {
 		String path = "/employee/salesreport.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext);
+		
+		// set employee
+		Employee loggedEmployee =  (Employee) session.getAttribute("employee");
+		ctx.setVariable("employee", loggedEmployee);
 		
 		// Number of total purchases per package.
 		List spps;
@@ -108,7 +113,7 @@ public class SalesReportServlet extends HttpServlet {
 			return;
 		}
 		
-		ctx.setVariable("packageSaleWProdList", spps);
+		ctx.setVariable("packageSaleWProdList", pswp);
 		
 		List psnp;
 		try {
@@ -119,7 +124,7 @@ public class SalesReportServlet extends HttpServlet {
 			return;
 		}
 		
-		ctx.setVariable("packageSaleNProdList", spps);
+		ctx.setVariable("packageSaleNProdList", psnp);
 		
 		// Average number of optional products sold together with each service package.
 		List asppsp;
@@ -131,7 +136,7 @@ public class SalesReportServlet extends HttpServlet {
 			return;
 		}
 		
-		ctx.setVariable("avgSaleProdPerSPList", spps);
+		ctx.setVariable("avgSaleProdPerSPList", asppsp);
 		
 		// List of insolvent users, suspended orders and alerts.
 		List<User> isusers;

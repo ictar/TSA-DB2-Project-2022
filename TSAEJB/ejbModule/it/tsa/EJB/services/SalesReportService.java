@@ -18,7 +18,7 @@ public class SalesReportService {
 		List rList;
 		
 		try {
-			rList = em.createNativeQuery("select e.spid, e.vpid, e.ordercnt from ServicePkgPurchase e")
+			rList = em.createNativeQuery("select e.spid, e.vpid, e.ordercnt from PurchasePerSPVP e")
 					.getResultList();
 		}catch (PersistenceException e) {
 			return null;
@@ -28,13 +28,13 @@ public class SalesReportService {
 	
 	// return Number of total purchases per package
 	public List getTotalPurchasePerSP() {
-		return em.createNativeQuery("SELECT e.spid, sum(e.ordercnt) FROM ServicePkgPurchase e GROUP BY e.spid")
+		return em.createNativeQuery("SELECT e.spid, e.ordercnt FROM PurchasePerSP e")
 						.getResultList();
 	}
 	
 	// return Average number of optional products sold together with each service package.
 	public List getAvgProdPerSP() {
-		return em.createNativeQuery("SELECT e.spid, sum(e.prodcnt)/sum(e.ordercnt) FROM ServicePkgPurchase e GROUP BY e.spid")
+		return em.createNativeQuery("SELECT e.spid, e.avgProdcnt FROM AvgProdSalesPerSP e")
 						.getResultList();
 	}
 	

@@ -7,13 +7,15 @@
 </head>
 <body>
 
-<div align="right">
+<div class="loginDiv" th:if="${employee != null}" align="right">
+	<p th:text="${employee.getUsername()}" />
 	<a th:href = "@{/SalesReport}">Sales Report</a><br>
+	<a th:href="@{/Logout}">Logout</a>
 </div>
 
 <h3>Create a new product</h3>
 <div>
-	<form action="#" th:action="@{/CreateProduct}" method="POST">
+	<form th:action="@{/CreateProduct}" method="POST">
 	    <fieldset>
 	        Product Name: <input type="text" name="productName" required> <br>
 	        Monthly Fee: <input type="number" name="monthlyFee" required><br>
@@ -26,7 +28,7 @@
 
 <h3>Create a new service</h3>
 <div>
-	<form action="#" th:action="@{/CreateService}"  method="POST">
+	<form th:action="@{/CreateService}"  method="POST">
 	    <fieldset>
 	        Service Name: <input type="text" name="serviceName" required> <br>
 	        
@@ -41,7 +43,7 @@
 		        <div id="selt_fixphone" style="display:none">
 		        </div>
 		        <div id="selt_mbphone" style="display:none">
-		        		Number of Extra Minutes: <input type="number" name="extraMinute"><br>
+		        		Number of Minutes: <input type="number" name="extraMinute"><br>
 		        		Fee for extra Minutes: <input type="number" name="extraMinuteFee"><br>
 		        		Number of SMSs: <input type="number" name="extraSMS"><br>
 		        		Fee for extra SMSs: <input type="number" name="extraSMSFee"><br>
@@ -59,7 +61,7 @@
 
 <h3>Create a new validity period</h3>
 <div>
-	<form action="#" th:action="@{/CreateValidityPeriod}" method="POST">
+	<form th:action="@{/CreateValidityPeriod}" method="POST">
 	    <fieldset>
 	        Validity Period Duration: <input type="text" name="duration" required> <br>
 	         Validity Period Price: <input type="number" name="price" required><br>
@@ -72,7 +74,7 @@
 
 <h3>Create a new service package</h3>
 <div>
-	<form action="#" th:action="@{/CreateServicePkg}"  method="POST">
+	<form th:action="@{/CreateServicePkg}"  method="POST">
 	    <fieldset>
 	        Service Package Name: <input type="text" name="servicePkgName" required> <br>
 	        
