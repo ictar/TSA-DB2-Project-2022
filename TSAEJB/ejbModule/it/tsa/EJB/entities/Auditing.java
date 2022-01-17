@@ -11,8 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQueries ({
-@NamedQuery(name="Auditing.findAll", query="SELECT a from Auditing a"),
-@NamedQuery(name = "Auditing", query = "SELECT a From Auditing a WHERE a.user=?1")
+	@NamedQuery(name="Auditing.findAll", query="SELECT a from Auditing a")
 })
 public class Auditing implements Serializable {
 

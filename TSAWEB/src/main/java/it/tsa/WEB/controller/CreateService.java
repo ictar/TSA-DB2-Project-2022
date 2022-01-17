@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
 
 import it.tsa.EJB.services.ServiceService;
 
@@ -50,8 +51,8 @@ public class CreateService extends HttpServlet {
         float extraMinFee, extraSMSFee, extraGBFee;
         
         try {
-        		name = request.getParameter("serviceName");
-        		type = request.getParameter("serviceType");
+        		name = StringEscapeUtils.escapeJava(request.getParameter("serviceName"));
+        		type = StringEscapeUtils.escapeJava(request.getParameter("serviceType"));
         		// get parameters and check
         		// initial to -1 imply no need by default
         		includedMin = includedSMS = includedGB = -1;
@@ -60,18 +61,18 @@ public class CreateService extends HttpServlet {
         		case "fixphone":
         			break;
         		case "mbphone":
-        			includedMin = Integer.valueOf(request.getParameter("extraMinute"));
-        			includedSMS = Integer.valueOf(request.getParameter("extraSMS"));
-        			extraMinFee = Float.valueOf(request.getParameter("extraMinuteFee"));
-        			extraSMSFee = Float.valueOf(request.getParameter("extraSMSFee"));
+        			includedMin = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraMinute")));
+        			includedSMS = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraSMS")));
+        			extraMinFee = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraMinuteFee")));
+        			extraSMSFee = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraSMSFee")));
         			
         			if(includedMin < 0 || includedSMS < 0 || extraMinFee < 0 || extraSMSFee < 0) {
         				throw new Exception("Invalid field!");
         			}
         			break;
         		case "int":
-        			includedGB = Integer.valueOf(request.getParameter("extraGB"));
-        			extraGBFee = Float.valueOf(request.getParameter("extraGBFee"));
+        			includedGB = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraGB")));
+        			extraGBFee = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("extraGBFee")));
         			
         			if(includedGB < 0 || extraGBFee < 0) {
         				throw new Exception("Invalid field!");
