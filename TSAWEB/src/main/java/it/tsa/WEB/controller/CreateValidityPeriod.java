@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringEscapeUtils;
 
 import it.tsa.EJB.services.ValidityPeriodService;
 
@@ -48,8 +49,8 @@ public class CreateValidityPeriod extends HttpServlet {
         float price;
         
         try {
-        		duration = Integer.valueOf(request.getParameter("duration"));
-        		price = Float.valueOf(request.getParameter("price"));
+        		duration = Integer.valueOf(StringEscapeUtils.escapeJava(request.getParameter("duration")));
+        		price = Float.valueOf(StringEscapeUtils.escapeJava(request.getParameter("price")));
         		 		
         		// create a new validity period
         		vpService.createAValidityPeriod(duration, price);
