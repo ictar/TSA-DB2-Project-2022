@@ -12,6 +12,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="optproduct")
+@NamedQuery(name = "OptProduct.findOne", query = "SELECT op FROM OptProduct op WHERE op.id=?1")
 public class OptProduct implements Serializable {
 
 	
