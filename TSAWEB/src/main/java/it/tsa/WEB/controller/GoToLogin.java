@@ -15,7 +15,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.MiscService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -28,8 +28,8 @@ public class GoToLogin extends HttpServlet {
 	private ServletContext servletContext;
 	private WebContext ctx;
 
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
+	@EJB(name = "project.services/MiscService")
+	private MiscService miscService;
 
 	public void init() throws ServletException {
 		System.out.println("Start gotologin");
