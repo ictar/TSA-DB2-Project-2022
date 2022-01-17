@@ -1,10 +1,6 @@
 package it.tsa.WEB.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -15,22 +11,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.exceptions.CreationException;
-import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.MiscService;
 import it.tsa.EJB.services.OrderService;
-
-/**
- * Servlet implementation class GoToHomePage
- */
 
 @WebServlet("/BuyService")
 public class BuyService extends HttpServlet {
@@ -41,14 +30,13 @@ public class BuyService extends HttpServlet {
 	private WebContext ctx;
 	private String path;
 
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
+	@EJB(name = "project.services/MiscService")
+	private MiscService miscService;
 
 	@EJB(name = "project.services/OrderService")
 	private OrderService orderService;
 
 	public void init() throws ServletException {
-		System.out.println("Start buyservcie");
 		servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -70,7 +58,7 @@ public class BuyService extends HttpServlet {
 		path = "/service/buyservice.html";
 
 		List<ServicePackage> servicePackages = null;
-		servicePackages = dbService.findAllServicePackages();
+		servicePackages = miscService.findAllServicePackages();
 		ctx.setVariable("servicePackages", servicePackages);
 		ctx.setVariable("error", error);
 		ctx.setVariable("user", loggedUser);

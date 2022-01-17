@@ -16,7 +16,7 @@ import it.tsa.EJB.entities.ServicePackage;
 import it.tsa.EJB.entities.User;
 
 @Stateless
-public class DbService {
+public class MiscService {
 
 	@PersistenceContext(unitName = "TSAEJB")
 	private EntityManager em;

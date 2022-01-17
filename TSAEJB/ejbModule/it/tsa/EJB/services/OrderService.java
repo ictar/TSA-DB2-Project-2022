@@ -27,7 +27,7 @@ public class OrderService {
 	private EntityManager em;
 
 	@EJB
-	private DbService dbService;
+	private MiscService miscService;
 
 	@EJB
 	private UserService userService;
@@ -84,7 +84,7 @@ public class OrderService {
 		setOrderValidity(order, activated);
 		
 		if (activated) {
-			order.setActivationSchedule(dbService.createActivationSchedule(order));
+			order.setActivationSchedule(miscService.createActivationSchedule(order));
 			userService.fixUser(user);
 		}
 		else 
