@@ -19,7 +19,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.services.DbService;
+import it.tsa.EJB.services.MiscService;
 
 /**
  * Servlet implementation class GoToHomePage
@@ -32,8 +32,8 @@ public class GoToHomepage extends HttpServlet {
 	private ServletContext servletContext;
 	private WebContext ctx;
 
-	@EJB(name = "project.services/DbService")
-	private DbService dbService;
+	@EJB(name = "project.services/MiscService")
+	private MiscService miscService;
 
 	public void init() throws ServletException {
 		servletContext = getServletContext();
@@ -50,25 +50,26 @@ public class GoToHomepage extends HttpServlet {
 
 		User loggedUser = (User) request.getSession().getAttribute("user");
 
-
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
 		if (loggedUser != null) {
-			//copied to avoid using user.getOrders().get(i) everytime
+
 			List<Order> allOrders = new ArrayList<Order>(loggedUser.getOrders());
 			List<Order> rejectedOrders = new ArrayList<Order>();
-			
-			for(int i=0;i<allOrders.size();i++) {
-				if (allOrders.get(i).isRejectedFlag())
-					rejectedOrders.add(allOrders.get(i));
+
+			for (Order order : allOrders) {
+
+				if (order.isRejectedFlag() || !order.isValidityFlag())
+					rejectedOrders.add(order);
 			}
 
 			ctx.setVariable("rejectedOrders", rejectedOrders);
+
+			ctx.setVariable("user", loggedUser);
+			templateEngine.process(path, ctx, response.getWriter());
+		} else {
+			response.sendRedirect(servletContext.getContextPath() + "/BuyService");
 		}
-
-		ctx.setVariable("user", loggedUser);
-
-		templateEngine.process(path, ctx, response.getWriter());
 
 	}
 
