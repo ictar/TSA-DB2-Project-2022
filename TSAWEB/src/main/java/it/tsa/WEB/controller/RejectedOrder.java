@@ -46,7 +46,7 @@ public class RejectedOrder extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String path = "/service/orderConfirmation.html";
+		String path = "/user/orderConfirmation.html";
 		int orderId = Integer.parseInt(request.getParameter("toFixOrderId"));
 		request.getSession().setAttribute("toFixOrder", orderId);
 		User currentUser = (User) request.getSession().getAttribute("user");

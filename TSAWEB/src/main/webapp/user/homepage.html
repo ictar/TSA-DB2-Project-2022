@@ -23,8 +23,66 @@
 		<a th:href="@{/Logout}">Logout</a>
 	</div>
 
+	What you can do: <a th:href="@{/BuyService}">Buy Service</a><br>
+	<table th:if="${servicePackages != null && servicePackages.size() >0}">
+		<tr>
+			<th>Service Package</th>
+			<th>Service</th>
+			<th>Validity Periods
+				<table>
+					<tr>
+						<td>o</td>
+						<td>Months</td>
+						<td>Price</td>
+					</tr>
+				</table>
+			</th>
+			<th>Optional Products
+				<table>
+					<tr>
+						<td>o</td>
+						<td>Name</td>
+						<td>Price</td>
+					</tr>
+				</table>
+			</th>
+		</tr>
+		<tr th:each="srvPkg : ${servicePackages}">
+			<td>
+				<p th:text="${srvPkg.name}" />
+			</td>
+			<td>
+				<p th:each="service: ${srvPkg.availableServices}"
+					th:text="${service.name}" />
+			</td>
+			<td>
+				<table class="innerTable">
+					<tr th:each="vp : ${srvPkg.validityPeriods}">
+						<td>
+							<p th:text="${vp.monthDuration}" />
+						</td>
+						<td>
+							<p th:text="${vp.price} + ' euro'" />
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="innerTable">
+					<tr th:each="op : ${srvPkg.availableOptProds}">
+
+						<td>
+							<p th:text="${op.name}" />
+						</td>
+						<td>
+							<p th:text="${op.monthlyFee} + ' euro'" />
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 	<div>
-		What you can do: <a th:href="@{/BuyService}">Buy Service</a><br>
 		<form th:action="@{/RejectedOrder}" method="POST"
 			th:if="${user.insolventFlag || (rejectedOrders != null && rejectedOrders.size()>0)}">
 			<div>
