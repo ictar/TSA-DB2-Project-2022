@@ -57,7 +57,7 @@ public class OrderUploader extends HttpServlet {
 
 			request.getSession().removeAttribute("order");
 
-		} else if (request.getParameter("login") != null || user == null) {
+		} else if (user == null || request.getParameter("login") != null) {
 
 			request.getSession().setAttribute("onlyLogin", true);
 			path = servletContext.getContextPath() + "/GoToLogin";
@@ -109,7 +109,7 @@ public class OrderUploader extends HttpServlet {
 			ctx.setVariable("user", user);
 			ctx.setVariable("order", order);
 
-			templateEngine.process("/service/orderConfirmation.html", ctx, response.getWriter());
+			templateEngine.process("/user/orderConfirmation.html", ctx, response.getWriter());
 		}
 
 	}

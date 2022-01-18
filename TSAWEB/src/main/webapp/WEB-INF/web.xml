@@ -1,15 +1,39 @@
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
-	version="4.0">
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
 	<display-name>TSAWEB</display-name>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-
 	<servlet>
 		<servlet-name>BuyService</servlet-name>
 		<servlet-class>it.tsa.WEB.controller.BuyService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>CreateProduct</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.CreateProduct</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>CreateService</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.CreateService</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>CreateServicePkg</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.CreateServicePkg</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>CreateValidityPeriod</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.CreateValidityPeriod</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>EmployeeHome</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.EmployeeHome</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>EmployeeLogin</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.EmployeeLogin</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>GoToHomepage</servlet-name>
@@ -23,12 +47,28 @@
 		<servlet-name>Logout</servlet-name>
 		<servlet-class>it.tsa.WEB.controller.Logout</servlet-class>
 	</servlet>
-		<servlet>
+	<servlet>
+		<servlet-name>OrderConfirmation</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.OrderConfirmation</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>OrderUploader</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.OrderUploader</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RejectedOrder</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.RejectedOrder</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SalesReport</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.SalesReport</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>UserLogin</servlet-name>
 		<servlet-class>it.tsa.WEB.controller.UserLogin</servlet-class>
 	</servlet>
-	<!-- <servlet-mapping> <servlet-name>TestServlet</servlet-name> <url-pattern>/</url-pattern> 
-		</servlet-mapping> -->
-
-
+	<servlet>
+		<servlet-name>UserRegister</servlet-name>
+		<servlet-class>it.tsa.WEB.controller.UserRegister</servlet-class>
+	</servlet>
 </web-app>

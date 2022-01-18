@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.exceptions.LoginErrorException;
+import it.tsa.EJB.exceptions.CredentialsException;
 
 @Stateless
 public class UserService {
@@ -16,22 +16,24 @@ public class UserService {
 	@PersistenceContext(unitName = "TSAEJB")
 	private EntityManager em;
 
-	public User checkCredentials(String usrn, String pwd) throws LoginErrorException {
-		System.out.println("checkCredentials em: " + em);
-		List<User> uList = null;
-		User result;
-		try {
-			uList = em.createNamedQuery("User.checkCredentials", User.class).setParameter(1, usrn).setParameter(2, pwd)
-					.getResultList();
+	public User checkCredentials(String usrn, String pwd) throws CredentialsException {
+		List<User> eList;
 
-			result = em.find(User.class, uList.get(0).getId());
+		try {
+			eList = em.createNamedQuery("Employee.checkCredenetials", User.class).setParameter(1, usrn)
+					.setParameter(2, pwd).getResultList();
 		} catch (PersistenceException e) {
-			throw new LoginErrorException();
+			throw new CredentialsException("Could not verify credentials of employee " + usrn);
 		}
-		if (uList.size() == 1)
-			return result;
-		else
-			throw new LoginErrorException();
+
+		if (eList.isEmpty()) {
+			throw new CredentialsException("Credentials are wrong");
+		} else if (eList.size() == 1) {
+			return eList.get(0);
+		}
+
+		throw new CredentialsException("More than one employee registered with same credentials.");
+
 	}
 
 	public boolean createUser(String username, String pwd, String email) {
@@ -60,7 +62,7 @@ public class UserService {
 
 	public void userInsolvent(User user) throws Exception {
 		user.failedPayment();
-		
+
 	}
 
 	public void fixUser(User user) throws Exception {

@@ -63,7 +63,7 @@ public class OrderConfirmation extends HttpServlet {
 
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
-		path = "/service/orderConfirmation.html";
+		path = "/user/orderConfirmation.html";
 
 		if (definedAndWantsToCreateOrder(order)) {
 

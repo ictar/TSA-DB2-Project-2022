@@ -18,7 +18,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.tsa.EJB.entities.Order;
 import it.tsa.EJB.entities.User;
-import it.tsa.EJB.exceptions.LoginErrorException;
+import it.tsa.EJB.exceptions.CredentialsException;
 import it.tsa.EJB.services.UserService;
 
 @WebServlet("/UserLogin")
@@ -57,11 +57,12 @@ public class UserLogin extends HttpServlet {
 
 		try {
 			User user = userService.checkCredentials(username, password);
+			System.out.println("SUer: " + user);
 			Order createdOrder = (Order) request.getSession().getAttribute("order");
 			request.getSession().removeAttribute("onlyLogin");
+			System.out.println(request.getSession().getAttribute("onlyLogin"));
 			
 			request.getSession().setAttribute("user", user);
-			
 			if(createdOrder != null) 
 				path = servletContext.getContextPath() + "/OrderConfirmation";
 			else
@@ -69,10 +70,10 @@ public class UserLogin extends HttpServlet {
 			
 			response.sendRedirect(path);
 			
-		} catch (LoginErrorException e) {
+		} catch (CredentialsException e) {
 
 			ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsgLogin", "Wrong us or pass");
+			ctx.setVariable("errorMsgLogin", e.getMessage());
 			path = "/index.html";
 			templateEngine.process(path, ctx, response.getWriter());
 		

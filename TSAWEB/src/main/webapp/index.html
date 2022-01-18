@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div align="right">
+	<div align="right" th:unless="${onlyLogin}">
 		<a href="employee/login.html">Employee</a><br>
 	</div>
 	<h1>Telco Service Home Page</h1>
@@ -44,7 +44,7 @@
 		</tr>
 	</table>
 
-	<form action="BuyService" method="POST" th:unless="${onlyLogin}">
+	<form action="GoToHomepage" method="POST" th:unless="${onlyLogin}">
 		Browse without logging in <input type="submit" value="Enter">
 	</form>
 

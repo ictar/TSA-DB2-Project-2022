@@ -55,7 +55,7 @@ public class BuyService extends HttpServlet {
 
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
-		path = "/service/buyservice.html";
+		path = "/user/buyservice.html";
 
 		List<ServicePackage> servicePackages = null;
 		servicePackages = miscService.findAllServicePackages();

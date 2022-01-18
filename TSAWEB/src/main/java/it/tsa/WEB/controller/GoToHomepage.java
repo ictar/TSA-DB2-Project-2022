@@ -46,14 +46,13 @@ public class GoToHomepage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String path = "/service/homepage.html";
+		String path = "/user/homepage.html";
 
 		User loggedUser = (User) request.getSession().getAttribute("user");
 
 		ctx = new WebContext(request, response, servletContext, request.getLocale());
 
 		if (loggedUser != null) {
-
 			List<Order> allOrders = new ArrayList<Order>(loggedUser.getOrders());
 			List<Order> rejectedOrders = new ArrayList<Order>();
 
@@ -64,12 +63,10 @@ public class GoToHomepage extends HttpServlet {
 			}
 
 			ctx.setVariable("rejectedOrders", rejectedOrders);
-
-			ctx.setVariable("user", loggedUser);
-			templateEngine.process(path, ctx, response.getWriter());
-		} else {
-			response.sendRedirect(servletContext.getContextPath() + "/BuyService");
 		}
+		ctx.setVariable("servicePackages", miscService.findAllServicePackages());	
+		ctx.setVariable("user", loggedUser);
+		templateEngine.process(path, ctx, response.getWriter());
 
 	}
 
@@ -79,6 +76,3 @@ public class GoToHomepage extends HttpServlet {
 	}
 
 }
-
-//rejectedOrders = loggedUser.getOrders().stream().filter(order -> order.isRejectedFlag())			
-//.toList();

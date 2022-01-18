@@ -32,7 +32,6 @@ public class MiscService {
 			return null;
 		}
 		return result;
-
 	}
 
 	public List<ServicePackage> findAllServicePackages() {
