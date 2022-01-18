@@ -64,10 +64,10 @@ BEGIN
     DECLARE prod_cur CURSOR for SELECT optProdId FROM chosenOptProd WHERE orderId=new.id;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
     
-    SELECT count(optProdId) INTO prodCount FROM chosenOptProd WHERE orderId=new.id;
-    select count(p.optProdId)/count(distinct o.id) into avgProdCount from orders o left join chosenOptProd p on o.id = p.orderId where o.validityFlag = 1 and o.servicePkgId = new.servicePkgId;
-
 	IF (new.validityFlag != old.validityFlag and new.validityFlag = 1) THEN
+		SELECT count(optProdId) INTO prodCount FROM chosenOptProd WHERE orderId=new.id;
+		select count(p.optProdId)/count(distinct o.id) into avgProdCount from orders o left join chosenOptProd p on o.id = p.orderId where o.validityFlag = 1 and o.servicePkgId = new.servicePkgId;
+        
 		-- Update: Number of total purchases per package. 
         IF (exists
 			(select * from PurchasePerSP where spid=new.servicePkgId)) THEN
