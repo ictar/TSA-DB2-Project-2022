@@ -41,11 +41,11 @@ public class Order {
 	private User user;
 
 	/*
-	 * Fetch Lazy because we don't always need to know what ServicePackage is in
+	 * Fetch Eager because we often need to know the ServicePackage of the Order
 	 * Order Don't cascade because we don't want to allow ServicePackage
 	 * modification from Order
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "servicePkgId")
 	private ServicePackage servicePackage;
 
@@ -54,13 +54,22 @@ public class Order {
 	 * Don't cascade because we don't want to allow OptProduct5 modification from
 	 * Order
 	 */
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(fetch= FetchType.EAGER)
 	@JoinTable(name = "chosenOptProd", joinColumns = @JoinColumn(name = "orderId"), inverseJoinColumns = @JoinColumn(name = "optProdId"))
 	private Set<OptProduct> chosenOptProds;
 
-	@OneToOne(cascade = CascadeType.PERSIST, mappedBy = "order")
+	@OneToOne(cascade = CascadeType.PERSIST, mappedBy = "order", fetch = FetchType.LAZY)
 	private ActivationSchedule activationSchedule;
 
+	public float computeTotalValue() {
+
+		totalValue = validityPeriod.getPrice();
+		totalValue = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalValue,
+				(a, b) -> a + b);
+		totalValue *= validityPeriod.getMonthDuration();
+		return totalValue;
+	}
+	
 	public ActivationSchedule getActivationSchedule() {
 		return activationSchedule;
 	}
@@ -149,12 +158,4 @@ public class Order {
 		this.user = user;
 	}
 
-	public float computeTotalValue() {
-
-		totalValue = validityPeriod.getPrice();
-		totalValue = chosenOptProds.stream().map(product -> product.getMonthlyFee()).reduce(totalValue,
-				(a, b) -> a + b);
-		totalValue *= validityPeriod.getMonthDuration();
-		return totalValue;
-	}
 }

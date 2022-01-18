@@ -73,7 +73,7 @@ public class OrderUploader extends HttpServlet {
 				int orderId;
 				
 				if (isNewOrder)
-					orderId = orderService.confirmOrder(order);
+					orderId = orderService.storeOrder(order);
 				else
 					orderId = order.getId();
 

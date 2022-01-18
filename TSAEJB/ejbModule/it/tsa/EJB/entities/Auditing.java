@@ -15,7 +15,6 @@ import javax.persistence.*;
 })
 public class Auditing implements Serializable {
 
-	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -27,7 +26,7 @@ public class Auditing implements Serializable {
 	private float amount;
 	private Timestamp lastRejectionTime;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="userID")
 	private User user;
 	

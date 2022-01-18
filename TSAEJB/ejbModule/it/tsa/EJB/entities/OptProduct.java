@@ -82,27 +82,11 @@ public class OptProduct implements Serializable {
 	}
 
 	/**
-	 * @param servicePkgs the servicePkgs to set
-	 */
-/*	public void setServicePkgs(List<ServicePackage> servicePkg) {
-		this.getServicePkgs().add(servicePkg);
-		servicePkg.getOptProd().add(this);
-	}
-*/
-	/**
 	 * @return the orders
 	 */
 	public Set<Order> getOrders() {
 		return orders;
 	}
 
-	/**
-	 * @param orders the orders to set
-	 */
-/*	public void setOrders(List<Order> order) {
-		this.getOrders().add(order);
-		order.getOptProd().add(this);
-	}
-*/
 	
 }

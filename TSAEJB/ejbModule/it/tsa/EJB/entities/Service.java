@@ -10,7 +10,7 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToMany(mappedBy="availableServices", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy="availableServices", fetch = FetchType.LAZY)
 	private Set<ServicePackage> servicePackageRelated;
 	
 	private String name;

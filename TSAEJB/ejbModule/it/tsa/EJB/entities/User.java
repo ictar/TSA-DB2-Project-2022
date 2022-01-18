@@ -46,8 +46,26 @@ public class User implements Serializable {
 	 * Lazy because not always required. When we delete User we want to delete also
 	 * related info in Auditing table
 	 */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Auditing> audits;
+	
+	public int failedPayment() {
+		insolventFlag = true;
+		numFailedPayments++;
+		return numFailedPayments;
+	}
+	
+	public void decreaseFailedPayments() {
+		boolean hasRejectedOrder = false;
+
+		numFailedPayments = 0;
+		for (int i = 0; i < orders.size(); i++) {
+			if (orders.get(i).isRejectedFlag())
+				hasRejectedOrder = true;
+		}
+
+		insolventFlag = hasRejectedOrder;
+	}
 
 	public User() {
 		super();
@@ -113,11 +131,6 @@ public class User implements Serializable {
 		return this.id;
 	}
 
-	public int failedPayment() {
-		insolventFlag = true;
-		numFailedPayments++;
-		return numFailedPayments;
-	}
 
 	public List<Order> getOrders() {
 		return this.orders;
@@ -132,19 +145,8 @@ public class User implements Serializable {
 	}
 
 	public void addAudit(Auditing audit) {
-		getAudits().add(audit);
+		audits.add(audit);
 		audit.setUser(this);
 	}
 
-	public void decreaseFailedPayments() {
-		boolean hasRejectedOrder = false;
-
-		numFailedPayments = 0;
-		for (int i = 0; i < orders.size(); i++) {
-			if (orders.get(i).isRejectedFlag())
-				hasRejectedOrder = true;
-		}
-
-		insolventFlag = hasRejectedOrder;
-	}
 }

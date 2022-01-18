@@ -17,14 +17,14 @@ public class ServicePackage {
 	private int id;
 	private String name;
 
-	@OneToMany(mappedBy = "servicePackage")
+	@OneToMany(mappedBy = "servicePackage", fetch= FetchType.EAGER)
 	private Set<ValidityPeriod> validityPeriods;
 
 	/*
 	 * don't cascade because services can be associated to multiple service
 	 * packages, any modification must be done to services directly
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "servicesInPkg", joinColumns = @JoinColumn(name = "servicePkgId"), inverseJoinColumns = @JoinColumn(name = "serviceId"))
 	private Set<Service> availableServices;
 
@@ -38,10 +38,9 @@ public class ServicePackage {
 	private Set<OptProduct> availableOptProds;
 
 	/*
-	 * cascade only Remove because the order doesn't make anymore sense without
-	 * ServicePackage. Lazy because not often (never) used
+	 *  Lazy because never used
 	 */
-	@OneToMany(mappedBy = "servicePackage", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "servicePackage", fetch = FetchType.LAZY)
 	private Set<Order> orders;
 
 	public int getId() {

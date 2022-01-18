@@ -71,7 +71,7 @@ public class OrderService {
 		}
 	}
 
-	public int confirmOrder(Order order) throws Exception {
+	public int storeOrder(Order order) throws Exception {
 		Order mergedOrder = em.merge(order);
 		
 		em.flush(); //flush otherwise no order found in em.find in attemptPayment

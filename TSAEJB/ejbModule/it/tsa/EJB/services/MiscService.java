@@ -54,12 +54,4 @@ public class MiscService {
 		as.setOrder(order); //for completeness when adding to db
 		return as;
 	}
-
-	public void createAuditing(Order order, User user) throws Exception{
-		Auditing a = new Auditing();
-		a.setUser(user);
-		a.setAmount(order.getTotalvalue());
-		a.setLastRejectionTime(new Timestamp(System.currentTimeMillis()));
-		em.merge(a);
-	}
 }

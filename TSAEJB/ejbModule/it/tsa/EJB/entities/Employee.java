@@ -20,6 +20,8 @@ public class Employee implements Serializable {
 	private int id;
 	
 	private String username;
+	private String password;
+	
 	/**
 	 * @return the id
 	 */
@@ -55,11 +57,9 @@ public class Employee implements Serializable {
 		this.password = password;
 	}
 
-	private String password;
 
 	public Employee() {
 		super();
 	}
-   
 	
 }

@@ -37,6 +37,7 @@
 						<th>Optional products</th>
 						<th>Validity period</th>
 						<th>Monthly fee</th>
+						<th>Start date</th>
 						<th>Total cost</th>
 					</tr>
 					<tr th:each="ro : ${rejectedOrders}">
@@ -51,6 +52,7 @@
 								th:text="${optProd.name}" /></td>
 						<td><p th:text="${ro.validityPeriod.monthDuration}" /></td>
 						<td><p th:text="${ro.validityPeriod.price}" /></td>
+						<td><p th:text="${ro.startDate}" /></td>						
 						<td><p th:text="${ro.totalValue}" /></td>
 					</tr>
 				</table>
