@@ -31,7 +31,6 @@
 			<th>Validity Periods
 				<table>
 					<tr>
-						<td>o</td>
 						<td>Months</td>
 						<td>Price</td>
 					</tr>
@@ -40,7 +39,6 @@
 			<th>Optional Products
 				<table>
 					<tr>
-						<td>o</td>
 						<td>Name</td>
 						<td>Price</td>
 					</tr>
@@ -84,7 +82,7 @@
 	</table>
 	<div>
 		<form th:action="@{/RejectedOrder}" method="POST"
-			th:if="${user.insolventFlag || (rejectedOrders != null && rejectedOrders.size()>0)}">
+			th:if="${user != null && (user.insolventFlag || (rejectedOrders != null && rejectedOrders.size()>0))}">
 			<div>
 				Rejected orders:
 				<table>

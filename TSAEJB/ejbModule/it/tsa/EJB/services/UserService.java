@@ -17,22 +17,22 @@ public class UserService {
 	private EntityManager em;
 
 	public User checkCredentials(String usrn, String pwd) throws CredentialsException {
-		List<User> eList;
+		List<User> uList;
 
 		try {
-			eList = em.createNamedQuery("Employee.checkCredenetials", User.class).setParameter(1, usrn)
+			uList = em.createNamedQuery("User.checkCredentials", User.class).setParameter(1, usrn)
 					.setParameter(2, pwd).getResultList();
 		} catch (PersistenceException e) {
-			throw new CredentialsException("Could not verify credentials of employee " + usrn);
+			throw new CredentialsException("Could not verify credentials of user " + usrn);
 		}
 
-		if (eList.isEmpty()) {
+		if (uList.isEmpty()) {
 			throw new CredentialsException("Credentials are wrong");
-		} else if (eList.size() == 1) {
-			return eList.get(0);
+		} else if (uList.size() == 1) {
+			return uList.get(0);
 		}
 
-		throw new CredentialsException("More than one employee registered with same credentials.");
+		throw new CredentialsException("More than one user registered with same credentials.");
 
 	}
 
