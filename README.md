@@ -2,7 +2,7 @@
 
 TSA - TELCO Service Application is a Java EE project realized for the Data Bases 2 course at Politecnico di Milano.
 Specification of the project are described inside the [specification document](./Assignment/Specification.pdf).
-Design choices and implementation are described inside the released [presentation]().
+Design choices and implementation are described inside the released [presentation](./Design/Xu-Locatelli-DBProject.pdf).
 
 ## Development
 This project has been developed with the following technologies:
