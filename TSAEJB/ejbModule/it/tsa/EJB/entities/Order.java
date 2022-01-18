@@ -45,7 +45,7 @@ public class Order {
 	 * Order Don't cascade because we don't want to allow ServicePackage
 	 * modification from Order
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "servicePkgId")
 	private ServicePackage servicePackage;
 
@@ -54,11 +54,11 @@ public class Order {
 	 * Don't cascade because we don't want to allow OptProduct5 modification from
 	 * Order
 	 */
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(fetch=FetchType.EAGER)
 	@JoinTable(name = "chosenOptProd", joinColumns = @JoinColumn(name = "orderId"), inverseJoinColumns = @JoinColumn(name = "optProdId"))
 	private Set<OptProduct> chosenOptProds;
 
-	@OneToOne(cascade = CascadeType.PERSIST, mappedBy = "order")
+	@OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "order")
 	private ActivationSchedule activationSchedule;
 
 	public ActivationSchedule getActivationSchedule() {

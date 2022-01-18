@@ -46,7 +46,7 @@ public class User implements Serializable {
 	 * Lazy because not always required. When we delete User we want to delete also
 	 * related info in Auditing table
 	 */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Auditing> audits;
 
 	public User() {
@@ -147,4 +147,11 @@ public class User implements Serializable {
 
 		insolventFlag = hasRejectedOrder;
 	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + "]";
+	}
+	
+	
 }

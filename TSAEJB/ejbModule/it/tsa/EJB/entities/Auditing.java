@@ -27,7 +27,7 @@ public class Auditing implements Serializable {
 	private float amount;
 	private Timestamp lastRejectionTime;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="userID")
 	private User user;
 	

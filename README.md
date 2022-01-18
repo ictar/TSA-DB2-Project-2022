@@ -11,5 +11,5 @@ This project has been developed with the following technologies:
 * MySQL Server
   
 ## Authors
-* [Xu Qiongjie](https://github.com/)
-* []()
+* [Xu Qiongjie](https://github.com/ictar)
+* [Daniele Locatelli](https://github.com/locadani)
